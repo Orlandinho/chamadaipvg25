@@ -46,7 +46,8 @@ class UpdateUserRequest extends FormRequest
             'name' => ['required','string','max:255'],
             'slug' => ['required','string','max:255', Rule::unique('users')->ignore($this->user->id)],
             'email' => ['required','email','max:255', Rule::unique('users')->ignore($this->user->id)],
-            'role_id' => ['required', Rule::enum(Roles::class)]
+            'role_id' => ['required', Rule::enum(Roles::class)],
+            'classroom_id' => ['nullable', Rule::exists('classrooms', 'id')],
         ];
     }
 }

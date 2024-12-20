@@ -16,11 +16,25 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Antonio Orlando',
-            'email' => 'orlando@example.com',
-            'slug' => 'antonio-orlando',
-            'role_id' => 1,
+        User::factory()->createMany([
+            [
+                'name' => 'Antonio Orlando',
+                'email' => 'orlando@example.com',
+                'slug' => 'antonio-orlando',
+                'role_id' => 1,
+            ],
+            [
+                'name' => 'Irene Martins',
+                'email' => 'irene-martins@example.com',
+                'slug' => 'irene-martins',
+                'role_id' => 2,
+            ],
+            [
+                'name' => 'Guilherme Martins',
+                'email' => 'guilherme-martins@example.com',
+                'slug' => 'guilherme-martins',
+                'role_id' => 3,
+            ]
         ]);
     }
 }

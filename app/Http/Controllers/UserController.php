@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Roles;
+use App\Http\Resources\ClassroomResource;
 use App\Http\Resources\UserResource;
+use App\Models\Classroom;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -28,7 +30,8 @@ class UserController extends Controller
     public function create(): Response
     {
         return inertia('User/Create', [
-            'roles' => Roles::allRoles()
+            'roles' => Roles::allRoles(),
+            'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name'))
         ]);
     }
 

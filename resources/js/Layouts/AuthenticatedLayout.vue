@@ -35,6 +35,9 @@
                                 <NavLink :href="route('users.index')" :active="route().current('users.*')">
                                     Colaboradores
                                 </NavLink>
+                                <NavLink :href="route('classrooms.index')" :active="route().current('classrooms.*')">
+                                    Classes
+                                </NavLink>
                             </div>
                         </div>
 
@@ -116,6 +119,9 @@
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('users.index')" :active="route().current('users.*')">
                             Colaboradores
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('classrooms.index')" :active="route().current('classrooms.*')">
+                            Classes
                         </ResponsiveNavLink>
                     </div>
 

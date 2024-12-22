@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\Roles;
+use App\Models\Classroom;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class StudentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,10 +19,8 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'email' => $this->email,
-            'role' => Roles::tryFrom($this->role_id)->role(),
-            'role_id' => $this->when($request->routeIs('users.edit'), $this->role_id),
-            'classroom' => new ClassroomResource($this->whenLoaded('classroom')),
+            'dob' => $this->dob,
+            'classroom' => $this->whenLoaded('classroom', ClassroomResource::make(Classroom::find($this->classroom_id))),
         ];
     }
 }

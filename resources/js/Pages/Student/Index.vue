@@ -3,34 +3,43 @@
     import { Head, Link, router } from '@inertiajs/vue3';
     import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline/index.js';
     import { useConfirm } from '@/Composables/useConfirm.js';
+    import { format, differenceInYears } from 'date-fns';
 
     const props = defineProps({
-        classrooms: Object,
+        students: Object,
     });
 
     const { confirmation } = useConfirm();
 
-    const deleteClassroom = async (classroom) => {
+    const formattedDob = (date) => {
+        return format(new Date(date), 'dd/MM/yyyy');
+    };
+
+    const formattedAge = (date) => {
+        let yearOld = differenceInYears(Date.now(), new Date(date));
+
+        return yearOld > 1 ? yearOld + ' anos' : yearOld + ' ano';
+    };
+
+    const deleteStudent = async (student) => {
         if (
             !(await confirmation(
-                'Você está prestes a excluir a classe dos ' + classroom.name + '. Deseja prosseguir com essa ação?',
+                'Você está prestes a excluir as informações do(a) aluno(a) ' +
+                    student.name +
+                    '. Deseja prosseguir com essa ação?',
             ))
         ) {
             return false;
         }
 
-        router.delete(route('classrooms.destroy', classroom), {
+        router.delete(route('students.destroy', student), {
             preserveScroll: true,
         });
-    };
-
-    const limitDescription = (description) => {
-        return description.length > 50 ? description.substring(0, 40).trim() + '...' : description;
     };
 </script>
 
 <template>
-    <Head title="Classes" />
+    <Head title="Alunos" />
 
     <AuthenticatedLayout>
         <div class="py-12">
@@ -39,22 +48,22 @@
                     <div class="p-6 text-gray-900">
                         <div class="sm:flex sm:items-center">
                             <div class="sm:flex-auto">
-                                <h1 class="text-base font-semibold text-gray-900">Classes</h1>
-                                <p v-if="classrooms.length < 1" class="mt-2 text-sm text-gray-700">
-                                    Ainda não há nenhuma classe registrada. Clique no botão ao lado para criar uma nova
-                                    classe.
+                                <h1 class="text-base font-semibold text-gray-900">Alunos</h1>
+                                <p v-if="students.length < 1" class="mt-2 text-sm text-gray-700">
+                                    Ainda não há nenhum aluno registrado. Clique no botão ao lado para registrar um novo
+                                    aluno
                                 </p>
-                                <p v-else class="mt-2 text-sm text-gray-700">Lista das classes e suas descrições.</p>
+                                <p v-else class="mt-2 text-sm text-gray-700">Lista dos alunos.</p>
                             </div>
                             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                                 <Link
-                                    :href="route('classrooms.create')"
+                                    :href="route('students.create')"
                                     class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Nova Classe
+                                    Novo Aluno
                                 </Link>
                             </div>
                         </div>
-                        <div v-if="classrooms.length > 0" class="mt-8 flow-root">
+                        <div v-if="students.length > 0" class="mt-8 flow-root">
                             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                     <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
@@ -69,7 +78,17 @@
                                                     <th
                                                         scope="col"
                                                         class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Descrição
+                                                        Data Nasc
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Idade
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Classe
                                                     </th>
 
                                                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -78,34 +97,46 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-gray-200 bg-white">
-                                                <tr v-for="classroom in classrooms" :key="classroom.id">
+                                                <tr v-for="student in students" :key="student.id">
                                                     <td
                                                         class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                                         <Link
-                                                            :href="route('classrooms.show', classroom)"
+                                                            :href="route('students.show', student)"
                                                             class="hover:underline">
-                                                            {{ classroom.name }}
+                                                            {{ student.name }}
                                                         </Link>
                                                     </td>
                                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                        {{ limitDescription(classroom.description) }}
+                                                        {{ formattedDob(student.dob) }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        {{ formattedAge(student.dob) }}
+                                                    </td>
+                                                    <td
+                                                        class="whitespace-nowrap px-3 py-4 text-sm"
+                                                        :class="student.classroom ? 'text-gray-500' : 'text-red-400'">
+                                                        {{
+                                                            student.classroom
+                                                                ? student.classroom.name
+                                                                : 'Sem classe definida'
+                                                        }}
                                                     </td>
                                                     <td
                                                         class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                         <div class="flex space-x-2">
-                                                            <Link :href="route('classrooms.edit', classroom)">
+                                                            <Link :href="route('students.edit', student)">
                                                                 <PencilSquareIcon
                                                                     class="text-green-600 hover:text-green-400 w-5 h-5" />
                                                                 <span class="sr-only">
-                                                                    {{ 'Editar ' + classroom.name }}
+                                                                    {{ 'Editar ' + student.name }}
                                                                 </span>
                                                             </Link>
                                                             <button>
                                                                 <TrashIcon
                                                                     class="text-red-600 hover:text-red-400 w-5 h-5"
-                                                                    @click="deleteClassroom(classroom)" />
+                                                                    @click="deleteStudent(student)" />
                                                                 <span class="sr-only">
-                                                                    {{ 'Excluir ' + classroom.name }}
+                                                                    {{ 'Excluir ' + student.name }}
                                                                 </span>
                                                             </button>
                                                         </div>

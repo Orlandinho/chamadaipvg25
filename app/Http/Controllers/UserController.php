@@ -55,7 +55,7 @@ class UserController extends Controller
     public function show(User $user): Response
     {
         return inertia('User/Show', [
-            'user' => new UserResource($user)
+            'user' => new UserResource($user->load('classroom'))
         ]);
     }
 
@@ -66,7 +66,8 @@ class UserController extends Controller
     {
         return inertia('User/Edit', [
             'user' => new UserResource($user),
-            'roles' => Roles::allRoles()
+            'roles' => Roles::allRoles(),
+            'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name'))
         ]);
     }
 

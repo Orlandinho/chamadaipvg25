@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/classes/{classroom:slug}/editar', 'edit')->name('classrooms.edit');
         Route::patch('/classes/{classroom}', 'update')->name('classrooms.update');
         Route::delete('/classes/{classroom}', 'destroy')->name('classrooms.destroy');
+    });
+
+    Route::controller(StudentController::class)->group(function () {
+        Route::get('/estudantes', 'index')->name('students.index');
+        Route::get('/estudantes/criar', 'create')->name('students.create');
+        Route::post('/estudantes', 'store')->name('students.store');
+        Route::get('/estudantes/{student:slug}', 'show')->name('students.show');
+        Route::get('/estudantes/{student:slug}/editar', 'edit')->name('students.edit');
+        Route::patch('/estudantes/{student}', 'update')->name('students.update');
+        Route::delete('/estudantes/{student}', 'destroy')->name('students.destroy');
     });
 
 });

@@ -37,6 +37,12 @@ return [
         'description' => [
             'required' => 'É necessário incluir uma descrição',
             'max' => 'A descrição está muito longa'
+        ],
+        'dob' => [
+            'required' => 'A data de nascimento é necessária',
+            'date' => 'Data inválida',
+            'date_format' => 'A data não está no formato correto',
+            'before_or_equal' => 'A data precisa ser uma data anterior a hoje'
         ]
     ],
 

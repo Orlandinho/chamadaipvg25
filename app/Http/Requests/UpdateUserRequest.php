@@ -28,11 +28,17 @@ class UpdateUserRequest extends FormRequest
 
     public function makeSlugFromTitle($name): string
     {
-        $slug = Str::slug($name);
+        if ($this->user->name !== $name) {
 
-        $count = User::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+            $slug = Str::slug($name);
 
-        return $count ? "{$slug}-{$count}" : $slug;
+            $count = User::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+
+            return $count ? "{$slug}-{$count}" : $slug;
+        }
+
+        return $this->user->slug;
+
     }
 
     /**

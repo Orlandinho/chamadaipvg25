@@ -4,6 +4,7 @@
     import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline/index.js';
     import { useConfirm } from '@/Composables/useConfirm.js';
     import { format, differenceInYears } from 'date-fns';
+    import Pagination from '@/Components/Pagination.vue';
 
     const props = defineProps({
         students: Object,
@@ -49,7 +50,7 @@
                         <div class="sm:flex sm:items-center">
                             <div class="sm:flex-auto">
                                 <h1 class="text-base font-semibold text-gray-900">Alunos</h1>
-                                <p v-if="students.length < 1" class="mt-2 text-sm text-gray-700">
+                                <p v-if="students.data.length < 1" class="mt-2 text-sm text-gray-700">
                                     Ainda não há nenhum aluno registrado. Clique no botão ao lado para registrar um novo
                                     aluno
                                 </p>
@@ -63,7 +64,7 @@
                                 </Link>
                             </div>
                         </div>
-                        <div v-if="students.length > 0" class="mt-8 flow-root">
+                        <div v-if="students.data.length > 0" class="mt-8 flow-root">
                             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                     <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
@@ -97,7 +98,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-gray-200 bg-white">
-                                                <tr v-for="student in students" :key="student.id">
+                                                <tr v-for="student in students.data" :key="student.id">
                                                     <td
                                                         class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                                         <Link
@@ -150,6 +151,11 @@
                         </div>
                     </div>
                 </div>
+                <Pagination
+                    v-if="students.meta.links.length > 3"
+                    class="mt-2"
+                    :meta="students.meta"
+                    :links="students.links" />
             </div>
         </div>
     </AuthenticatedLayout>

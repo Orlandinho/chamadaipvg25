@@ -17,7 +17,7 @@ class ClassroomController extends Controller
     public function index(): Response
     {
         return inertia("Classroom/Index", [
-            "classrooms" => ClassroomResource::collection(Classroom::all()->sortBy('name')),
+            "classrooms" => ClassroomResource::collection(Classroom::withCount('students')->orderBy('name')->get()),
         ]);
     }
 
@@ -49,7 +49,7 @@ class ClassroomController extends Controller
     public function show(Classroom $classroom): Response
     {
         return inertia("Classroom/Show", [
-            "classroom" => new ClassroomResource($classroom),
+            "classroom" => new ClassroomResource($classroom->loadCount('students')),
         ]);
     }
 

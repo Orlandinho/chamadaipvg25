@@ -71,6 +71,11 @@
                                                         class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                                         Descrição
                                                     </th>
+                                                    <th
+                                                        scope="col"
+                                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Total de Alunos
+                                                    </th>
 
                                                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                         <span class="sr-only">Editar e Excluir</span>
@@ -89,6 +94,9 @@
                                                     </td>
                                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                         {{ limitDescription(classroom.description) }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        {{ classroom.students_count }}
                                                     </td>
                                                     <td
                                                         class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">

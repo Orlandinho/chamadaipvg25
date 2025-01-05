@@ -34,6 +34,12 @@
                                             {{ classroom.description }}
                                         </dd>
                                     </div>
+                                    <div class="bg-white px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
+                                        <dt class="text-sm/6 font-medium text-gray-900">Total de alunos</dt>
+                                        <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
+                                            {{ classroom.students_count }}
+                                        </dd>
+                                    </div>
                                 </dl>
                             </div>
                         </div>

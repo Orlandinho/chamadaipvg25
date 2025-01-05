@@ -19,7 +19,7 @@ class StudentController extends Controller
     public function index(): Response
     {
         return inertia('Student/Index', [
-            'students' => StudentResource::collection(Student::with('classroom')->get()->sortBy('name')),
+            'students' => StudentResource::collection(Student::orderBy('name')->with('classroom')->paginate(15)),
             'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name')),
         ]);
     }

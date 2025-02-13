@@ -22,4 +22,14 @@ class Classroom extends Model
     {
         return $this->hasMany(Student::class);
     }
+
+    public function visitants(): HasMany
+    {
+        return $this->hasMany(Visitant::class);
+    }
+
+    public function registers(): HasMany
+    {
+        return $this->hasMany(Register::class);
+    }
 }

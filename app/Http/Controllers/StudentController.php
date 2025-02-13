@@ -19,7 +19,7 @@ class StudentController extends Controller
     public function index(): Response
     {
         return inertia('Student/Index', [
-            'students' => StudentResource::collection(Student::orderBy('name')->with('classroom')->paginate(15)),
+            'students' => StudentResource::collection(Student::orderBy('name')->with(['classroom','registers'])->paginate(15)),
             'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name')),
         ]);
     }
@@ -54,7 +54,7 @@ class StudentController extends Controller
     public function show(Student $student): Response
     {
         return inertia('Student/Show', [
-            'student' => StudentResource::make($student->load('classroom')),
+            'student' => StudentResource::make($student->load(['classroom','registers'])),
         ]);
     }
 

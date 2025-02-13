@@ -40,6 +40,18 @@
                                             {{ classroom.students_count }}
                                         </dd>
                                     </div>
+                                    <div
+                                        v-if="classroom.teachers.length > 0"
+                                        class="bg-white px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
+                                        <dt class="text-sm/6 font-medium text-gray-900">
+                                            {{ classroom.teachers.length > 1 ? 'Professores(as)' : 'Professor(a)' }}
+                                        </dt>
+                                        <dd
+                                            v-for="teacher in classroom.teachers"
+                                            class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
+                                            {{ teacher.name }}
+                                        </dd>
+                                    </div>
                                 </dl>
                             </div>
                         </div>

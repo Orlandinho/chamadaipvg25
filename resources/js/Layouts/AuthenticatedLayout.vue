@@ -39,7 +39,13 @@
                                     Classes
                                 </NavLink>
                                 <NavLink :href="route('students.index')" :active="route().current('students.*')">
-                                    Estudantes
+                                    Alunos
+                                </NavLink>
+                                <NavLink :href="route('registers.index')" :active="route().current('registers.*')">
+                                    Chamada
+                                </NavLink>
+                                <NavLink :href="route('visitants.index')" :active="route().current('visitants.*')">
+                                    Visitantes
                                 </NavLink>
                             </div>
                         </div>
@@ -127,7 +133,13 @@
                             Classes
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('students.index')" :active="route().current('students.*')">
-                            Estudantes
+                            Alunos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('registers.index')" :active="route().current('registers.*')">
+                            Chamada
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('visitants.index')" :active="route().current('visitants.*')">
+                            Visitantes
                         </ResponsiveNavLink>
                     </div>
 

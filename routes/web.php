@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VisitantController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -57,6 +59,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/estudantes/{student:slug}/editar', 'edit')->name('students.edit');
         Route::patch('/estudantes/{student}', 'update')->name('students.update');
         Route::delete('/estudantes/{student}', 'destroy')->name('students.destroy');
+    });
+
+    Route::controller(VisitantController::class)->group(function () {
+        Route::get('/visitantes', 'index')->name('visitants.index');
+        Route::get('/visitantes/criar', 'create')->name('visitants.create');
+        Route::post('/visitantes', 'store')->name('visitants.store');
+        Route::get('/visitantes/{visitant:slug}', 'show')->name('visitants.show');
+        Route::get('/visitantes/{visitant:slug}/editar', 'edit')->name('visitants.edit');
+        Route::patch('/visitantes/{visitant}', 'update')->name('visitants.update');
+        Route::delete('/visitantes/{visitant}', 'destroy')->name('visitants.destroy');
+    });
+
+    Route::controller(RegisterController::class)->group(function () {
+        Route::get('/chamada', 'index')->name('registers.index');
+        Route::patch('/chamada/{student}/{sunday}', 'update')->name('registers.update');
     });
 
 });

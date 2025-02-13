@@ -19,7 +19,18 @@ class ClassroomResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
+            'teachers' => UserResource::collection($this->whenLoaded('teachers')),
             'students_count' => $this->whenCounted('students'),
+            'frequency_ratio' => $this->when($request->routeIs('classrooms.index'), $this->frequency_rate($this->registers()->count(), $this->registers()->where('status', 1)->count())),
         ];
+    }
+
+    protected function frequency_rate(int $classes, int $frequency): int | float | string
+    {
+        if ($classes < 1) {
+            return 'Não definido';
+        }
+
+        return round(($frequency / $classes) * 100, 2) . '%';
     }
 }

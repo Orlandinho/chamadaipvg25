@@ -9,6 +9,12 @@
             type: Object,
             required: true,
         },
+        check: {
+            type: Boolean,
+        },
+        newLine: {
+            type: String,
+        },
     });
 </script>
 

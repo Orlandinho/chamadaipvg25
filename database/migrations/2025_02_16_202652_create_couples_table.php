@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('frequencies', function (Blueprint $table) {
+        Schema::create('couples', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('classroom_id')->constrained();
-            $table->date('sundays');
+            $table->string('husband');
+            $table->string('wife');
+            $table->string('slug')->unique();
+            $table->date('marriage_date');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('frequencies');
+        Schema::dropIfExists('couples');
     }
 };

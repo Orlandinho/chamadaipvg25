@@ -47,14 +47,6 @@ class VisitantController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Visitant $visitant)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Visitant $visitant): Response
@@ -70,7 +62,13 @@ class VisitantController extends Controller
      */
     public function update(UpdateVisitantRequest $request, Visitant $visitant)
     {
-        //
+        try {
+            $visitant->update($request->validated());
+        } catch (\Exception $e) {
+            return back()->alertFailure('Não foi possível atualizar os dados do visitante.');
+        }
+
+        return to_route('visitants.index')->alertSuccess('Dados do visitante foram atualizados!');
     }
 
     /**
@@ -78,6 +76,12 @@ class VisitantController extends Controller
      */
     public function destroy(Visitant $visitant)
     {
-        //
+        try {
+            $visitant->delete();
+        } catch (\Exception $e) {
+            return back()->alertFailure('Não foi possível apagar os dados do visitante.');
+        }
+
+        return to_route('visitants.index')->alertSuccess('Dados do visitante foram excluídos!');
     }
 }

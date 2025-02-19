@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\CoupleController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\StudentController;
@@ -19,17 +21,15 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'edit')->name('profile.edit');
+        Route::patch('/profile', 'update')->name('profile.update');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
+    });
 
     Route::controller(UserController::class)->group(function () {
         Route::get('/colaboradores', 'index')->name('users.index');
@@ -65,7 +65,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/visitantes', 'index')->name('visitants.index');
         Route::get('/visitantes/criar', 'create')->name('visitants.create');
         Route::post('/visitantes', 'store')->name('visitants.store');
-        Route::get('/visitantes/{visitant:slug}', 'show')->name('visitants.show');
         Route::get('/visitantes/{visitant:slug}/editar', 'edit')->name('visitants.edit');
         Route::patch('/visitantes/{visitant}', 'update')->name('visitants.update');
         Route::delete('/visitantes/{visitant}', 'destroy')->name('visitants.destroy');
@@ -74,6 +73,15 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(RegisterController::class)->group(function () {
         Route::get('/chamada', 'index')->name('registers.index');
         Route::patch('/chamada/{student}/{sunday}', 'update')->name('registers.update');
+    });
+
+    Route::controller(CoupleController::class)->group(function () {
+        Route::get('/casais', 'index')->name('couples.index');
+        Route::get('/casais/criar', 'create')->name('couples.create');
+        Route::post('/casais', 'store')->name('couples.store');
+        Route::get('/casais/{couple:slug}/editar', 'edit')->name('couples.edit');
+        Route::patch('/casais/{couple}', 'update')->name('couples.update');
+        Route::delete('/casais/{couple}', 'destroy')->name('couples.destroy');
     });
 
 });

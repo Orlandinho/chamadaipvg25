@@ -22,11 +22,11 @@ class UpdateUserRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'slug' => Str::slug($this->makeSlugFromTitle($this->name))
+            'slug' => Str::slug($this->makeSlugFromName($this->name))
         ]);
     }
 
-    public function makeSlugFromTitle($name): string
+    public function makeSlugFromName($name): string
     {
         if ($this->user->name !== $name) {
 

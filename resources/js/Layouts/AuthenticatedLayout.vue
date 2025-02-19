@@ -47,6 +47,9 @@
                                 <NavLink :href="route('visitants.index')" :active="route().current('visitants.*')">
                                     Visitantes
                                 </NavLink>
+                                <NavLink :href="route('couples.index')" :active="route().current('couples.*')">
+                                    Casais
+                                </NavLink>
                             </div>
                         </div>
 
@@ -140,6 +143,9 @@
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('visitants.index')" :active="route().current('visitants.*')">
                             Visitantes
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('couples.index')" :active="route().current('couples.*')">
+                            Casais
                         </ResponsiveNavLink>
                     </div>
 

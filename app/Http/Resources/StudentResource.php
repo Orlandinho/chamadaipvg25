@@ -21,6 +21,7 @@ class StudentResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'dob' => $this->dob,
+            'inactive' => $this->inactive,
             'classroom' => $this->whenLoaded('classroom', ClassroomResource::make(Classroom::find($this->classroom_id))),
             'registers' => RegisterResource::collection($this->whenLoaded('registers')),
             'classes' => $this->registers->count(),

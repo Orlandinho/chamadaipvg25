@@ -61,7 +61,6 @@
                                             id="dob"
                                             type="date"
                                             class="mt-1 block w-full"
-                                            maxlength="150"
                                             v-model="form.dob"
                                             required />
 

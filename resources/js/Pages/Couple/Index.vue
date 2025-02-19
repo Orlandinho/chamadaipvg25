@@ -7,23 +7,39 @@
     import Pagination from '@/Components/Pagination.vue';
 
     const props = defineProps({
-        visitants: Object,
+        couples: Object,
     });
 
     const { confirmation } = useConfirm();
 
-    const deleteVisitant = async (visitant) => {
+    const formattedDate = (date) => {
+        return format(new Date(date), 'dd/MM/yyyy');
+    };
+
+    const formattedAge = (date) => {
+        let yearOld = differenceInYears(Date.now(), new Date(date));
+
+        if (yearOld === 0) {
+            return '';
+        }
+
+        return yearOld > 1 ? yearOld + ' anos: ' : yearOld + ' ano: ';
+    };
+
+    const deleteCouple = async (couple) => {
         if (
             !(await confirmation(
-                'Você está prestes a excluir as informações do(a) visitante ' +
-                    visitant.name +
+                'Você está prestes a excluir as informações do casal ' +
+                    couple.husband.split(' ')[0] +
+                    ' e ' +
+                    couple.wife.split(' ')[0] +
                     '. Deseja prosseguir com essa ação?',
             ))
         ) {
             return false;
         }
 
-        router.delete(route('visitants.destroy', visitant), {
+        router.delete(route('couples.destroy', couple), {
             preserveScroll: true,
         });
     };
@@ -39,22 +55,22 @@
                     <div class="p-6 text-gray-900">
                         <div class="sm:flex sm:items-center">
                             <div class="sm:flex-auto">
-                                <h1 class="text-base font-semibold text-gray-900">Visitantes</h1>
-                                <p v-if="visitants.data.length < 1" class="mt-2 text-sm text-gray-700">
-                                    Ainda não há nenhum visitante registrado. Clique no botão ao lado para registrar um
-                                    novo visitante
+                                <h1 class="text-base font-semibold text-gray-900">Casais</h1>
+                                <p v-if="couples.data.length < 1" class="mt-2 text-sm text-gray-700">
+                                    Ainda não há nenhum casal registrado. Clique no botão ao lado para registrar um novo
+                                    casal
                                 </p>
-                                <p v-else class="mt-2 text-sm text-gray-700">Lista dos visitantes.</p>
+                                <p v-else class="mt-2 text-sm text-gray-700">Lista dos casais.</p>
                             </div>
                             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                                 <Link
-                                    :href="route('visitants.create')"
+                                    :href="route('couples.create')"
                                     class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Novo Visitante
+                                    Novo Casal
                                 </Link>
                             </div>
                         </div>
-                        <div v-if="visitants.data.length > 0" class="mt-8 flow-root">
+                        <div v-if="couples.data.length > 0" class="mt-8 flow-root">
                             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                     <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
@@ -64,17 +80,23 @@
                                                     <th
                                                         scope="col"
                                                         class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                                                        Nome
+                                                        Esposo
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Data da visita
+                                                        Esposa
                                                     </th>
                                                     <th
                                                         scope="col"
                                                         class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Classe
+                                                        Data de Casamento
+                                                    </th>
+
+                                                    <th
+                                                        scope="col"
+                                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Bodas
                                                     </th>
 
                                                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -83,33 +105,36 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-gray-200 bg-white">
-                                                <tr v-for="visitant in visitants.data" :key="visitant.id">
+                                                <tr v-for="couple in couples.data" :key="couple.id">
                                                     <td
-                                                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                                                        {{ visitant.name }}
+                                                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-700 sm:pl-6">
+                                                        {{ couple.husband }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-700">
+                                                        {{ couple.wife }}
                                                     </td>
                                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                        {{ visitant.visit }}
+                                                        {{ formattedDate(couple.marriage_date) }}
                                                     </td>
                                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                        {{ visitant.classroom.name }}
+                                                        {{ formattedAge(couple.marriage_date) + couple.bodas }}
                                                     </td>
                                                     <td
                                                         class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                         <div class="flex space-x-2">
-                                                            <Link :href="route('visitants.edit', visitant)">
+                                                            <Link :href="route('couples.edit', couple)">
                                                                 <PencilSquareIcon
                                                                     class="text-green-600 hover:text-green-400 w-5 h-5" />
                                                                 <span class="sr-only">
-                                                                    {{ 'Editar ' + visitant.name }}
+                                                                    {{ 'Editar ' + couple.id }}
                                                                 </span>
                                                             </Link>
                                                             <button>
                                                                 <TrashIcon
                                                                     class="text-red-600 hover:text-red-400 w-5 h-5"
-                                                                    @click="deleteVisitant(visitant)" />
+                                                                    @click="deleteCouple(couple)" />
                                                                 <span class="sr-only">
-                                                                    {{ 'Excluir ' + visitant.name }}
+                                                                    {{ 'Excluir ' + couple.id }}
                                                                 </span>
                                                             </button>
                                                         </div>
@@ -124,10 +149,10 @@
                     </div>
                 </div>
                 <Pagination
-                    v-if="visitants.meta.links.length > 3"
+                    v-if="couples.meta.links.length > 3"
                     class="mt-2"
-                    :meta="visitants.meta"
-                    :links="visitants.links" />
+                    :meta="couples.meta"
+                    :links="couples.links" />
             </div>
         </div>
     </AuthenticatedLayout>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -15,17 +16,25 @@ class UpdateStudentRequest extends FormRequest
     {
         return true;
     }
-    public function prepareForValidation(): void
+    protected function prepareForValidation(): void
     {
-        if ($this->name !== $this->student->name) {
-            $this->merge([
-                'slug' => Str::slug($this->name, '-')
-            ]);
-        } else {
-            $this->merge([
-                'slug' => $this->student->slug
-            ]);
+        $this->merge([
+            'slug' => Str::slug($this->makeSlugFromName($this->name))
+        ]);
+    }
+
+    public function makeSlugFromName($name): string
+    {
+        if ($this->student->name !== $name) {
+
+            $slug = Str::slug($name);
+
+            $count = Student::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+
+            return $count ? "{$slug}-{$count}" : $slug;
         }
+
+        return $this->student->slug;
 
     }
 
@@ -41,6 +50,7 @@ class UpdateStudentRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', Rule::unique('students')->ignore($this->student->id)],
             'dob' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
+            'inactive' => ['boolean'],
         ];
     }
 }

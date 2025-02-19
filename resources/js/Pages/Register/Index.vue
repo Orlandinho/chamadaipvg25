@@ -138,13 +138,13 @@
                                     <div class="mb-3 px-2 flex justify-between">
                                         <button class="flex text-gray-600 justify-center" @click="inc">
                                             <ChevronDoubleLeftIcon class="h-5 mr-2" />
-                                            <span class="text-sm">Mês Anterior</span>
+                                            <span class="text-sm">-1 Mês</span>
                                         </button>
                                         <button
                                             class="flex text-gray-600 justify-center"
                                             v-show="counter > 0"
                                             @click="dec">
-                                            <span class="text-sm">Próximo Mês</span>
+                                            <span class="text-sm">+1 Mês</span>
                                             <ChevronDoubleRightIcon class="h-5 ml-2" />
                                         </button>
                                     </div>

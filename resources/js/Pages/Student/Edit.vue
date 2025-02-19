@@ -7,6 +7,7 @@
     import SelectInput from '@/Components/SelectInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import { format } from 'date-fns';
+    import Checkbox from '@/Components/Checkbox.vue';
 
     const props = defineProps({
         student: Object,
@@ -17,6 +18,7 @@
         name: props.student.name,
         dob: format(new Date(props.student.dob), 'yyyy-MM-dd'),
         classroom_id: props.student.classroom?.id ?? '',
+        inactive: props.student.inactive,
     });
 
     const submit = () => {
@@ -77,6 +79,15 @@
                                             v-model="form.classroom_id" />
 
                                         <InputError class="mt-2" :message="form.errors.classroom_id" />
+                                    </div>
+
+                                    <div class="sm:col-span-3">
+                                        <label class="flex items-center">
+                                            <Checkbox name="inactive" v-model:checked="form.inactive" />
+                                            <span class="ms-2 text-sm font-semibold text-gray-700">
+                                                Aluno Inativo
+                                            </span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>

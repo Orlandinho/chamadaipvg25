@@ -23,12 +23,12 @@ class StoreUserRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'slug' => Str::slug($this->makeSlugFromTitle($this->name)),
+            'slug' => Str::slug($this->makeSlugFromName($this->name)),
             'password' => Hash::make('password'),
         ]);
     }
 
-    public function makeSlugFromTitle($name): string
+    public function makeSlugFromName($name): string
     {
         $slug = Str::slug($name);
 

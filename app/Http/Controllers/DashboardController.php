@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\CoupleResource;
+use App\Http\Resources\StudentResource;
+use App\Models\Register;
+use App\Models\Student;
+use App\Models\Visitant;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Response;
+
+class DashboardController extends Controller
+{
+    /**
+     * Handle the incoming request.
+     */
+    public function __invoke(): Response
+    {
+        $nextSunday = now()->isSunday() ? now() : Carbon::parse('next sunday');
+        $previousMonday = now()->isMonday() ? now() : Carbon::parse('previous monday');
+
+        $absentStudents = Register::select('student_id')
+            ->where('sunday', '>=', now()->subWeeks(4)->toDateString())
+            ->groupBy('student_id')
+            ->havingRaw('SUM(status) = 0')
+            ->havingRaw('COUNT(*) > 3')
+            ->pluck('student_id');
+
+        return inertia('Dashboard', [
+            'birthdays' => StudentResource::collection(DB::table('students')
+                ->whereRaw("DATE_FORMAT(dob, '%m-%d') BETWEEN ? AND ?",
+                    [
+                        $previousMonday->format('m-d'), $nextSunday->format('m-d')
+                    ])
+                ->orderByRaw("DATE_FORMAT(dob, '%m-%d')")
+                ->get()),
+            'marriage_birthdays' => CoupleResource::collection(DB::table('couples')
+                ->whereRaw("DATE_FORMAT(marriage_date, '%m-%d') BETWEEN ? AND ?",
+                    [
+                        $previousMonday->format('m-d'), $nextSunday->format('m-d')
+                    ])
+                ->orderByRaw("DATE_FORMAT(marriage_date, '%m-%d')")
+                ->get()),
+            'sunday' => [
+                'previous' =>  $previousMonday->format('d/m'),
+                'next' => $nextSunday->format('d/m')
+            ],
+            'stats' => [
+                'total_students' => Student::all()->count(),
+                'frequency' => Register::all()->count() < 1 ? 'Não definido' : round((Register::where('status', true)->count() / Register::all()->count()) * 100, 2) . '%',
+                'total_visits' => Visitant::all()->count(),
+                'total_unique_visits' => Visitant::select('name')->distinct('name')->count(),
+                'absent_students' => Student::with('classroom')->find($absentStudents),
+            ]
+        ]);
+    }
+}

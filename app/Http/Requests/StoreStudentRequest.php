@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
@@ -15,11 +16,20 @@ class StoreStudentRequest extends FormRequest
         return true;
     }
 
-    public function prepareForValidation(): void
+    protected function prepareForValidation(): void
     {
         $this->merge([
-            'slug' => Str::slug($this->name, '-')
+            'slug' => Str::slug($this->makeSlugFromName($this->name)),
         ]);
+    }
+
+    public function makeSlugFromName($name): string
+    {
+        $slug = Str::slug($name);
+
+        $count = Student::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+
+        return $count ? "{$slug}-{$count}" : $slug;
     }
 
     /**

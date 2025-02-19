@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->date('dob');
+            $table->boolean('inactive')->default(false);
             $table->timestamps();
         });
     }

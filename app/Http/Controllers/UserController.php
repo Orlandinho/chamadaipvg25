@@ -10,14 +10,21 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::user()->role_id !== Roles::ADMIN->value) {
+            abort(404);
+        }
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         return inertia('User/Index', [
             'users' => UserResource::collection(User::all()->sortBy('name'))
@@ -65,7 +72,7 @@ class UserController extends Controller
     public function edit(User $user): Response
     {
         return inertia('User/Edit', [
-            'user' => new UserResource($user),
+            'user' => new UserResource($user->load('classroom')),
             'roles' => Roles::allRoles(),
             'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name'))
         ]);

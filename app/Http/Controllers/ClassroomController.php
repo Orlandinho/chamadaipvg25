@@ -2,22 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Http\Resources\ClassroomResource;
 use App\Models\Classroom;
 use App\Http\Requests\StoreClassroomRequest;
 use App\Http\Requests\UpdateClassroomRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
 class ClassroomController extends Controller
 {
+
+    public function __construct()
+    {
+        if (Auth::user()->role_id > 2) {
+            abort(404);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(): Response
     {
         return inertia("Classroom/Index", [
-            "classrooms" => ClassroomResource::collection(Classroom::with('registers')->withCount('students')->orderBy('name')->get()),
+            "classrooms" => ClassroomResource::collection(Classroom::with('registers')->withCount('active_students')->orderBy('name')->get()),
         ]);
     }
 

@@ -28,19 +28,16 @@
     <Head title="Novo Usuário" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Usuários</h2>
-        </template>
-
         <div class="py-12">
             <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
                             <div class="border-b border-gray-900/10 pb-12">
-                                <h2 class="text-base/7 font-semibold text-gray-900">Personal Information</h2>
+                                <h2 class="text-base/7 font-semibold text-gray-900">Informações pessoais</h2>
                                 <p class="mt-1 text-sm/6 text-gray-600">
-                                    Use a permanent address where you can receive mail.
+                                    Professores precisam ter uma classe definida. Defina as classes antes de cadastrar
+                                    novos professores.
                                 </p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -84,7 +81,7 @@
                                         <InputError class="mt-2" :message="form.errors.role_id" />
                                     </div>
 
-                                    <div class="sm:col-span-3">
+                                    <div v-if="form.role_id === 3" class="sm:col-span-3">
                                         <InputLabel for="classroom" value="Classe" />
 
                                         <SelectInput

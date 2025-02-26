@@ -32,10 +32,16 @@
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('users.index')" :active="route().current('users.*')">
+                                <NavLink
+                                    v-if="$page.props.auth.user.role_id === 1"
+                                    :href="route('users.index')"
+                                    :active="route().current('users.*')">
                                     Colaboradores
                                 </NavLink>
-                                <NavLink :href="route('classrooms.index')" :active="route().current('classrooms.*')">
+                                <NavLink
+                                    v-if="$page.props.auth.user.role_id < 3"
+                                    :href="route('classrooms.index')"
+                                    :active="route().current('classrooms.*')">
                                     Classes
                                 </NavLink>
                                 <NavLink :href="route('students.index')" :active="route().current('students.*')">
@@ -47,7 +53,10 @@
                                 <NavLink :href="route('visitants.index')" :active="route().current('visitants.*')">
                                     Visitantes
                                 </NavLink>
-                                <NavLink :href="route('couples.index')" :active="route().current('couples.*')">
+                                <NavLink
+                                    v-if="$page.props.auth.user.role_id < 3"
+                                    :href="route('couples.index')"
+                                    :active="route().current('couples.*')">
                                     Casais
                                 </NavLink>
                             </div>
@@ -81,7 +90,7 @@
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
+                                            Sair
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -129,10 +138,16 @@
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('users.index')" :active="route().current('users.*')">
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.role_id !== 1"
+                            :href="route('users.index')"
+                            :active="route().current('users.*')">
                             Colaboradores
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('classrooms.index')" :active="route().current('classrooms.*')">
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.role_id < 3"
+                            :href="route('classrooms.index')"
+                            :active="route().current('classrooms.*')">
                             Classes
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('students.index')" :active="route().current('students.*')">
@@ -144,7 +159,10 @@
                         <ResponsiveNavLink :href="route('visitants.index')" :active="route().current('visitants.*')">
                             Visitantes
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('couples.index')" :active="route().current('couples.*')">
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.role_id < 3"
+                            :href="route('couples.index')"
+                            :active="route().current('couples.*')">
                             Casais
                         </ResponsiveNavLink>
                     </div>
@@ -163,7 +181,7 @@
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
+                                Sair
                             </ResponsiveNavLink>
                         </div>
                     </div>

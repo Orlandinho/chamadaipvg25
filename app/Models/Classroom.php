@@ -23,6 +23,11 @@ class Classroom extends Model
         return $this->hasMany(Student::class);
     }
 
+    public function active_students(): HasMany
+    {
+        return $this->hasMany(Student::class)->where('inactive', 0);
+    }
+
     public function visitants(): HasMany
     {
         return $this->hasMany(Visitant::class);

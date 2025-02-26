@@ -20,8 +20,8 @@ class ClassroomResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'teachers' => UserResource::collection($this->whenLoaded('teachers')),
-            'students_count' => $this->whenCounted('students'),
-            'frequency_ratio' => $this->when($request->routeIs('classrooms.index'), $this->frequency_rate($this->registers()->count(), $this->registers()->where('status', 1)->count())),
+            'students_count' => $this->whenCounted('active_students'),
+            'frequency_ratio' => $this->when($request->routeIs(['classrooms.index','dashboard']), $this->frequency_rate($this->registers()->count(), $this->registers()->where('status', 1)->count())),
         ];
     }
 

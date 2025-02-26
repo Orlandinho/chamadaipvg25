@@ -17,40 +17,63 @@ class RegisterController extends Controller
 {
     public function index(): Response
     {
-        return inertia('Register/Index', [
-            'students' => StudentResource::collection(Student::query()
+        if(auth()->user()->role_id === 3){
+            $students = StudentResource::collection(Student::where('classroom_id', auth()->user()->classroom_id)
+                ->with('registers')
+                ->where('inactive', false)
+                ->orderBy('name')
+                ->get());
+            $visitants = VisitantResource::collection(Visitant::where('classroom_id', auth()->user()->classroom_id)
+                ->whereDate('created_at', today()->toDateString())
+                ->get());
+        } else {
+            $students = StudentResource::collection(Student::query()
                 ->when(request()->input('filter'), function ($query, $filter) {
                     $query->where('classroom_id', $filter);
                 })
                 ->with('registers')
+                ->where('inactive', false)
                 ->orderBy('name')
-                ->get()),
-            'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name')),
-            'selectedClass' => (int) request()->input('filter'),
-            'visitants' => VisitantResource::collection(Visitant::query()
+                ->get());
+            $visitants = VisitantResource::collection(Visitant::query()
                 ->when(request()->input('filter'), function ($query, $filter) {
                     $query->where('classroom_id', $filter);
                 })
                 ->whereDate('created_at', today()->toDateString())
-                ->get())
+                ->get());
+        }
+
+        return inertia('Register/Index', [
+            'students' => $students,
+            'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name')),
+            'selectedClass' => (int) request()->input('filter'),
+            'visitants' => $visitants
         ]);
     }
 
-    public function update(Student $student, $sunday)
+    public function update(Student $student, $sunday): RedirectResponse
     {
         if(!$student->registers()->where('sunday', $sunday)->first()) {
             $student->registers()->create([
                 'classroom_id' => $student->classroom_id,
                 'sunday' => $sunday,
-                'status' => true
+                'status' => 1
             ]);
         } else {
             $register = Register::where('student_id', $student->id)->where('sunday', $sunday)->first();
-            $register->update([
-                'status' => ! $register->status
-            ]);
+            if($register->status === 1){
+                $register->update([
+                    'status' => 0
+                ]);
+            } else {
+                $register->delete();
+            }
         }
 
-        return redirect('/chamada?filter=' . (int) request()->filter);
+        if(auth()->user()->role_id === 3) {
+            return to_route('registers.index');
+        } else {
+            return redirect('/chamada?filter=' . (int) request()->filter);
+        }
     }
 }

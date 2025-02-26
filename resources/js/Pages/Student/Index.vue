@@ -59,8 +59,8 @@
                             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                                 <Link
                                     :href="route('students.create')"
-                                    class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Novo Aluno
+                                    class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-3 py-1.5 text-sm font-semibold text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900">
+                                    Novo Aluno(a)
                                 </Link>
                             </div>
                         </div>
@@ -100,7 +100,8 @@
                                             <tbody class="divide-y divide-gray-200 bg-white">
                                                 <tr v-for="student in students.data" :key="student.id">
                                                     <td
-                                                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
+                                                        :class="student.inactive ? 'text-red-400' : 'text-gray-900'">
                                                         <Link
                                                             :href="route('students.show', student)"
                                                             class="hover:underline">

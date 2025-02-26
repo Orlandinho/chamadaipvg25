@@ -7,7 +7,7 @@
     });
 
     const formattedAge = (date) => {
-        let year = differenceInYears(Date.now(), new Date(date));
+        let year = differenceInYears(Date.now(), parseISO(date));
         return year > 1 ? year + ' anos: ' : year + ' ano: ';
     };
 
@@ -18,7 +18,7 @@
 
 <template>
     <div class="overflow-hidden rounded-xl border border-gray-200">
-        <div class="border-b border-gray-900/5 bg-gray-50 px-6 py-2">
+        <div class="border-b border-gray-900/5 bg-green-100 px-6 py-2">
             <div class="text-sm/6 text-center font-medium text-gray-900">
                 Aniversários de Casamento de {{ sunday.previous + ' a ' + sunday.next }}
             </div>

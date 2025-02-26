@@ -50,7 +50,7 @@ class UpdateStudentRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', Rule::unique('students')->ignore($this->student->id)],
             'dob' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
-            'inactive' => ['boolean'],
+            'inactive' => ['required','boolean'],
         ];
     }
 }

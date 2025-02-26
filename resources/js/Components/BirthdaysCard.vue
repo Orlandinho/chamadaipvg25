@@ -13,7 +13,7 @@
 
 <template>
     <div class="overflow-hidden rounded-xl border border-gray-200">
-        <div class="border-b border-gray-900/5 bg-gray-50 px-6 py-2">
+        <div class="border-b border-gray-900/5 bg-green-100 px-6 py-2">
             <div class="text-sm/6 font-medium text-center text-gray-900">
                 Aniversariantes de {{ sunday.previous + ' a ' + sunday.next }}
             </div>

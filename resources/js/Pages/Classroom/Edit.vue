@@ -26,22 +26,14 @@
     <Head title="Editando Usuário" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Classes</h2>
-        </template>
-
         <div class="py-12">
             <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
                             <div class="border-b border-gray-900/10 pb-12">
-                                <h2 class="text-base/7 font-semibold text-gray-900">
-                                    Atualização da classe dos {{ classroom.name }}
-                                </h2>
-                                <p class="mt-1 text-sm/6 text-gray-600">
-                                    Use a permanent address where you can receive mail.
-                                </p>
+                                <h2 class="text-base/7 font-semibold text-gray-900">Classe dos {{ classroom.name }}</h2>
+                                <p class="mt-1 text-sm/6 text-gray-600">Atualização das informações da classe</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                     <div class="sm:col-span-6">

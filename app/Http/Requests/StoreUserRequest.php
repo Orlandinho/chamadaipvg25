@@ -49,7 +49,7 @@ class StoreUserRequest extends FormRequest
             'slug' => ['required','string','max:255'],
             'email' => ['required','email','max:255'],
             'role_id' => ['required', Rule::enum(Roles::class)],
-            'classroom_id' => ['nullable', Rule::exists('classrooms', 'id')],
+            'classroom_id' => ['nullable', Rule::requiredIf($this->role_id === 3), Rule::exists('classrooms', 'id')],
             'password' => ['required','string','min:8'],
         ];
     }

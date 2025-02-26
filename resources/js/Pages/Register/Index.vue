@@ -1,6 +1,6 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, Link, router } from '@inertiajs/vue3';
+    import { Head, Link, router, usePage } from '@inertiajs/vue3';
     import {
         XMarkIcon,
         CheckIcon,
@@ -77,10 +77,21 @@
 
         return 'text-red-500';
     };
+
+    const classroomName = computed(() => {
+        if (usePage().props.auth.user.role_id === 3) {
+            let classroom = props.classrooms.filter(
+                (classroom) => classroom.id === usePage().props.auth.user.classroom_id,
+            );
+            return 'Chamada ' + classroom[0].name;
+        }
+
+        return 'Chamada Geral';
+    });
 </script>
 
 <template>
-    <Head title="Chamada" />
+    <Head :title="classroomName" />
 
     <AuthenticatedLayout>
         <div class="py-12">
@@ -110,7 +121,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div>
+                            <div v-if="$page.props.auth.user.role_id < 3">
                                 <select
                                     v-model="filter"
                                     class="rounded-md py-1 pl-3 pr-8 border-gray-300 shadow-sm text-sm/6 focus:border-indigo-500 focus:ring-indigo-500">
@@ -124,11 +135,11 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                            <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
                                 <Link
                                     :href="route('students.create')"
-                                    class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Novo Aluno
+                                    class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-3 py-1.5 text-sm font-semibold text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900">
+                                    Novo Aluno(a)
                                 </Link>
                             </div>
                         </div>
@@ -170,7 +181,7 @@
                                             <tbody class="divide-y divide-gray-200 bg-white">
                                                 <tr v-for="student in students" :key="student.id">
                                                     <td
-                                                        class="whitespace-nowrap py-2.5 pl-2 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                                        class="whitespace-nowrap py-3 pl-2 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                                         <Link
                                                             :href="route('students.show', student)"
                                                             class="hover:underline">
@@ -181,7 +192,7 @@
                                                     <td
                                                         v-for="sunday in sundays"
                                                         :key="sunday.database"
-                                                        class="whitespace-nowrap px-3 py-2.5 font text-sm text-gray-500">
+                                                        class="whitespace-nowrap px-3 py-3 font text-sm text-gray-500">
                                                         <Link
                                                             :href="
                                                                 route('registers.update', {
@@ -191,8 +202,8 @@
                                                                 })
                                                             "
                                                             method="patch"
-                                                            preserve-scroll
-                                                            as="button">
+                                                            as="button"
+                                                            preserve-scroll>
                                                             <component
                                                                 :is="
                                                                     student.registers.find(function (el) {

@@ -3,14 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Bodas;
+use App\Enums\Roles;
 use App\Http\Resources\CoupleResource;
 use App\Models\Couple;
 use App\Http\Requests\StoreCoupleRequest;
 use App\Http\Requests\UpdateCoupleRequest;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
 class CoupleController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::user()->role_id > 2) {
+            abort(404);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */

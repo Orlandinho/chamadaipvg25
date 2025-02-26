@@ -1,18 +1,18 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { Head } from '@inertiajs/vue3';
-    import { differenceInYears, format } from 'date-fns';
+    import { differenceInYears, format, parseISO } from 'date-fns';
 
     const props = defineProps({
         student: Object,
     });
 
     const formattedDob = (date) => {
-        return format(new Date(date), 'dd/MM/yyyy');
+        return format(parseISO(date), 'dd/MM/yyyy');
     };
 
     const formattedAge = (date) => {
-        let yearOld = differenceInYears(Date.now(), new Date(date));
+        let yearOld = differenceInYears(Date.now(), parseISO(date));
 
         return yearOld > 1 ? yearOld + ' anos' : yearOld + ' ano';
     };
@@ -34,12 +34,6 @@
                             <div class="mt-6 border-t border-gray-100">
                                 <dl class="divide-y divide-gray-100">
                                     <div class="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
-                                        <dt class="text-sm/6 font-medium text-gray-900">Nome</dt>
-                                        <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
-                                            {{ student.name }}
-                                        </dd>
-                                    </div>
-                                    <div class="bg-white px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
                                         <dt class="text-sm/6 font-medium text-gray-900">Data de Nascimento</dt>
                                         <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
                                             {{ formattedDob(student.dob) }}
@@ -51,7 +45,7 @@
                                             {{ formattedAge(student.dob) }}
                                         </dd>
                                     </div>
-                                    <div class="bg-white px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
+                                    <div class="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
                                         <dt class="text-sm/6 font-medium text-gray-900">Classe</dt>
                                         <dd
                                             class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0"
@@ -65,7 +59,7 @@
                                             {{ student.classes + ' / ' + student.frequency }}
                                         </dd>
                                     </div>
-                                    <div class="bg-white px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
+                                    <div class="bg-gray-50 px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
                                         <dt class="text-sm/6 font-medium text-gray-900">Taxa de frequencia</dt>
                                         <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
                                             {{ student.frequency_ratio }}

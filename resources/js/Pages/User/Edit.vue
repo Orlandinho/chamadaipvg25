@@ -17,8 +17,10 @@
         name: props.user.name,
         email: props.user.email,
         role_id: props.user.role_id,
-        classroom_id: props.user.classroom_id,
+        classroom_id: props.user.classroom?.id ?? '',
     });
+
+    console.log(props.user);
 
     const submit = () => {
         form.patch(route('users.update', props.user));
@@ -29,23 +31,17 @@
     <Head title="Editando Usuário" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Usuários</h2>
-        </template>
-
         <div class="py-12">
             <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
                             <div class="border-b border-gray-900/10 pb-12">
-                                <h2 class="text-base/7 font-semibold text-gray-900">Personal Information</h2>
-                                <p class="mt-1 text-sm/6 text-gray-600">
-                                    Use a permanent address where you can receive mail.
-                                </p>
+                                <h2 class="text-base/7 font-semibold text-gray-900">Colaborador {{ user.name }}</h2>
+                                <p class="mt-1 text-sm/6 text-gray-600">Atualização de dados</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="sm:col-span-3">
+                                    <div class="col-span-1 sm:col-span-3">
                                         <InputLabel for="name" value="Nome" />
 
                                         <TextInput
@@ -59,7 +55,7 @@
                                         <InputError class="mt-2" :message="form.errors.name" />
                                     </div>
 
-                                    <div class="sm:col-span-3">
+                                    <div class="col-span-1 sm:col-span-3">
                                         <InputLabel for="email" value="E-mail" />
 
                                         <TextInput
@@ -72,7 +68,7 @@
                                         <InputError class="mt-2" :message="form.errors.email" />
                                     </div>
 
-                                    <div class="sm:col-span-3">
+                                    <div class="col-span-1 sm:col-span-3">
                                         <InputLabel for="role" value="Função" />
 
                                         <SelectInput
@@ -85,17 +81,16 @@
                                         <InputError class="mt-2" :message="form.errors.role_id" />
                                     </div>
 
-                                    <div class="sm:col-span-3">
+                                    <div v-if="form.role_id === 3" class="col-span-1 sm:col-span-3">
                                         <InputLabel for="classroom" value="Classe" />
 
                                         <SelectInput
                                             id="classroom"
                                             :items="classrooms"
                                             class="mt-1 block w-full"
-                                            v-model="form.classroom_id"
-                                            required />
+                                            v-model="form.classroom_id" />
 
-                                        <InputError class="mt-2" :message="form.errors.role_id" />
+                                        <InputError class="mt-2" :message="form.errors.classroom_id" />
                                     </div>
                                 </div>
                             </div>

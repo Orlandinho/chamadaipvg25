@@ -32,7 +32,8 @@ return [
             'enum' => 'A função selecionada não é válida'
         ],
         'classroom_id' => [
-            'A classe selecionada não existe'
+            'exists' => 'A classe selecionada não existe',
+            'required' => 'É necessário selecionar uma das classes'
         ],
         'description' => [
             'required' => 'É necessário incluir uma descrição',
@@ -43,7 +44,21 @@ return [
             'date' => 'Data inválida',
             'date_format' => 'A data não está no formato correto',
             'before_or_equal' => 'A data precisa ser uma data anterior a hoje'
-        ]
+        ],
+        'husband' => [
+            'required' => 'O nome do esposo é necessário',
+            'max' => 'Limite de caracteres excedido',
+        ],
+        'wife' => [
+            'required' => 'O nome da esposa é necessário',
+            'max' => 'Limite de caracteres excedido',
+        ],
+        'marriage_date' => [
+            'required' => 'A data de casamento é necessária',
+            'date' => 'Data inválida',
+            'date_format' => 'A data não está no formato correto',
+            'before_or_equal' => 'A data precisa ser uma data anterior a hoje'
+        ],
     ],
 
     /*

@@ -1,6 +1,6 @@
 <script setup>
     import { onUnmounted, ref, watchEffect } from 'vue';
-    import { CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
+    import { CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
     import { XMarkIcon } from '@heroicons/vue/20/solid';
     import { usePage } from '@inertiajs/vue3';
 
@@ -29,11 +29,13 @@
     const iconList = {
         success: CheckCircleIcon,
         failure: XCircleIcon,
+        attention: ExclamationTriangleIcon,
     };
 
     const iconColor = {
         success: 'text-green-500',
         failure: 'text-red-500',
+        attention: 'text-yellow-500',
     };
 
     onUnmounted(() => clearTimeout(timeout.value));

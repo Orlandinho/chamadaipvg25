@@ -44,5 +44,13 @@ class AppServiceProvider extends ServiceProvider
                 'title' => $title
             ]);
         });
+
+        RedirectResponse::macro('alertAttention', function (string $message, string $title = 'Atenção!') {
+            return $this->with('alert', [
+                'message' => $message,
+                'type' => 'attention',
+                'title' => $title
+            ]);
+        });
     }
 }

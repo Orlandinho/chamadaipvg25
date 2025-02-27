@@ -39,6 +39,9 @@
                                     Professores precisam ter uma classe definida. Defina as classes antes de cadastrar
                                     novos professores.
                                 </p>
+                                <p class="mt-1 text-sm/6 text-gray-600">
+                                    A senha padrão ao registrar um novo colaborador é "password".
+                                </p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                     <div class="sm:col-span-3">

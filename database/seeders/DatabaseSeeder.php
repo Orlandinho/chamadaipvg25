@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Administrador',
             'slug' => 'administrador',
-            'email' => 'admin@ipvgchamada.com',
+            'email' => 'admin@ipvgchamada.com.br',
             'password' => bcrypt('password'),
             'role_id' => 1,
             'classroom_id' => null,

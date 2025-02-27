@@ -23,26 +23,5 @@ class DatabaseSeeder extends Seeder
             'classroom_id' => null,
             'email_verified_at' => now(),
         ]);
-
-        User::factory()->createMany([
-            [
-                'name' => 'Antonio Orlando',
-                'email' => 'orlando@example.com',
-                'slug' => 'antonio-orlando',
-                'role_id' => 1,
-            ],
-            [
-                'name' => 'Irene Martins',
-                'email' => 'irene-martins@example.com',
-                'slug' => 'irene-martins',
-                'role_id' => 2,
-            ],
-            [
-                'name' => 'Guilherme Martins',
-                'email' => 'guilherme-martins@example.com',
-                'slug' => 'guilherme-martins',
-                'role_id' => 3,
-            ]
-        ]);
     }
 }

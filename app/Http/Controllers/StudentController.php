@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Http\Resources\ClassroomResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Classroom;
@@ -20,7 +21,7 @@ class StudentController extends Controller
     {
         return inertia('Student/Index', [
             'students' => StudentResource::collection(Student::query()
-                ->when(auth()->user()->role_id === 3, function ($query) {
+                ->when(auth()->user()->role_id === Roles::PROFESSOR->value, function ($query) {
                     $query->where('classroom_id', auth()->user()->classroom_id);
                 })
                 ->with(['classroom','registers'])
@@ -36,7 +37,12 @@ class StudentController extends Controller
     public function create(): Response
     {
         return inertia('Student/Create', [
-            'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name')),
+            'classrooms' => ClassroomResource::collection(Classroom::query()
+                ->when(auth()->user()->role_id === Roles::PROFESSOR->value, function ($query) {
+                    $query->where('id', auth()->user()->classroom_id);
+                })
+                ->orderBy('name')
+                ->get()),
         ]);
     }
 
@@ -59,6 +65,12 @@ class StudentController extends Controller
      */
     public function show(Student $student): Response
     {
+        if (auth()->user()->role_id === Roles::PROFESSOR->value) {
+            if (auth()->user()->classroom_id !== $student->classroom_id) {
+                abort(403);
+            }
+        }
+
         return inertia('Student/Show', [
             'student' => StudentResource::make($student->load(['classroom','registers'])),
         ]);
@@ -69,6 +81,12 @@ class StudentController extends Controller
      */
     public function edit(Student $student): Response
     {
+        if (auth()->user()->role_id === Roles::PROFESSOR->value) {
+            if (auth()->user()->classroom_id !== $student->classroom_id) {
+                abort(403);
+            }
+        }
+
         return inertia('Student/Edit', [
             'student' => StudentResource::make($student->load('classroom')),
             'classrooms' => ClassroomResource::collection(Classroom::all()->sortBy('name')),
@@ -80,6 +98,12 @@ class StudentController extends Controller
      */
     public function update(UpdateStudentRequest $request, Student $student)
     {
+        if (auth()->user()->role_id === Roles::PROFESSOR->value) {
+            if (auth()->user()->classroom_id !== $student->classroom_id) {
+                abort(403);
+            }
+        }
+
         try {
             $student->update($request->validated());
         } catch (\Exception $e) {
@@ -94,6 +118,12 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
+        if (auth()->user()->role_id === Roles::PROFESSOR->value) {
+            if (auth()->user()->classroom_id !== $student->classroom_id) {
+                abort(403);
+            }
+        }
+
         try {
             $student->delete();
         } catch (\Exception $e) {

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\Roles;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -21,7 +22,7 @@ class StudentPolicy
      */
     public function view(User $user, Student $student): bool
     {
-        return false;
+        return $user->role_id === Roles::PROFESSOR->value && $user->classroom_id === $student->classroom_id;
     }
 
     /**
@@ -37,7 +38,7 @@ class StudentPolicy
      */
     public function update(User $user, Student $student): bool
     {
-        return false;
+        return $user->role_id === 3 && $user->classroom_id === $student->classroom_id;
     }
 
     /**
@@ -45,7 +46,7 @@ class StudentPolicy
      */
     public function delete(User $user, Student $student): bool
     {
-        return false;
+        return $user->role_id === 3 && $user->classroom_id === $student->classroom_id;
     }
 
     /**

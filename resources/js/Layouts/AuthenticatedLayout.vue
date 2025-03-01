@@ -139,7 +139,7 @@
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            v-if="$page.props.auth.user.role_id !== 1"
+                            v-if="$page.props.auth.user.role_id < 3"
                             :href="route('users.index')"
                             :active="route().current('users.*')">
                             Colaboradores

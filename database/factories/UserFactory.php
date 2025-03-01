@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name),
             'role_id' => Roles::random(),
-            'email' => Str::slug($name, '.') . '@example.com',
+            'email' => Str::slug($name, '_') . '@example.com',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

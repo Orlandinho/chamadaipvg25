@@ -116,7 +116,7 @@
                                                                     {{ 'Editar ' + classroom.name }}
                                                                 </span>
                                                             </Link>
-                                                            <button>
+                                                            <button v-if="$page.props.auth.user.role_id === 1">
                                                                 <TrashIcon
                                                                     class="text-red-600 hover:text-red-400 w-5 h-5"
                                                                     @click="deleteClassroom(classroom)" />

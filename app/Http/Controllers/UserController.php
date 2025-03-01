@@ -18,7 +18,7 @@ class UserController extends Controller
     public function __construct()
     {
         if (Auth::user()->role_id !== Roles::ADMIN->value) {
-            abort(404);
+            abort(403);
         }
     }
     /**

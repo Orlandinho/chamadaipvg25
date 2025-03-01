@@ -17,7 +17,7 @@ class ClassroomController extends Controller
     public function __construct()
     {
         if (Auth::user()->role_id > 2) {
-            abort(404);
+            abort(403);
         }
     }
 
@@ -92,6 +92,10 @@ class ClassroomController extends Controller
      */
     public function destroy(Classroom $classroom): RedirectResponse
     {
+        if (Auth::user()->role_id !== Roles::ADMIN) {
+            abort(403);
+        }
+
         try {
             $classroom->delete();
         } catch (\Exception $e) {

@@ -33,7 +33,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
-                'user_avatar' => asset('storage/' . $request->user()->avatar),
+                'user_avatar' => $request->user()->avatar ? asset('storage/' . $request->user()->avatar) : '',
             ],
             'alert' => fn() => $request->session()->get('alert')
         ];

@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('couples', function (Blueprint $table) {
             $table->id();
             $table->string('husband');
+            $table->string('husband_avatar')->nullable();
             $table->string('wife');
+            $table->string('wife_avatar')->nullable();
             $table->string('slug')->unique();
             $table->date('marriage_date');
             $table->timestamps();

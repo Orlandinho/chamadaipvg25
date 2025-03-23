@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('classroom_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->string('avatar')->nullable();
+            $table->string('contact')->nullable();
             $table->date('dob');
             $table->boolean('inactive')->default(false);
             $table->timestamps();

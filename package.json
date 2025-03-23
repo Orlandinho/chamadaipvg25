@@ -22,6 +22,8 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.2.0",
-        "date-fns": "^4.1.0"
+        "browser-image-compression": "^2.0.2",
+        "date-fns": "^4.1.0",
+        "maska": "^3.1.0"
     }
 }

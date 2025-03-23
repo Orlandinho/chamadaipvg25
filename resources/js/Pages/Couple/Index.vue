@@ -5,6 +5,7 @@
     import { useConfirm } from '@/Composables/useConfirm.js';
     import { format, differenceInYears } from 'date-fns';
     import Pagination from '@/Components/Pagination.vue';
+    import CoupleAvatar from '@/Components/CoupleAvatar.vue';
 
     const props = defineProps({
         couples: Object,
@@ -75,12 +76,17 @@
                                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                     <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
                                         <table class="min-w-full divide-y divide-gray-300">
-                                            <thead class="bg-gray-50">
+                                            <thead class="bg-green-50">
                                                 <tr>
                                                     <th
                                                         scope="col"
-                                                        class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                        class="py-3.5 pl-4 pr-3 text-left text-sm min-w-[130px] font-semibold text-gray-900 sm:pl-6">
                                                         Esposo
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        class="px-3 py-3.5 text-center text-sm font-semibold min-w-[150px] text-gray-900">
+                                                        <span class="sr-only">Fotos do casal</span>
                                                     </th>
                                                     <th
                                                         scope="col"
@@ -109,6 +115,9 @@
                                                     <td
                                                         class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-700 sm:pl-6">
                                                         {{ couple.husband }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap pr-3 py-4 text-sm text-gray-700">
+                                                        <CoupleAvatar :couple="couple" />
                                                     </td>
                                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-700">
                                                         {{ couple.wife }}

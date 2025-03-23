@@ -1,6 +1,6 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, useForm, Link } from '@inertiajs/vue3';
+    import { Head, useForm, Link, router } from '@inertiajs/vue3';
     import InputLabel from '@/Components/InputLabel.vue';
     import InputError from '@/Components/InputError.vue';
     import TextInput from '@/Components/TextInput.vue';
@@ -8,6 +8,9 @@
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import { format } from 'date-fns';
     import Checkbox from '@/Components/Checkbox.vue';
+    import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
+    import { ref } from 'vue';
+    import imageCompression from 'browser-image-compression';
 
     const props = defineProps({
         student: Object,
@@ -17,12 +20,47 @@
     const form = useForm({
         name: props.student.name,
         dob: format(new Date(props.student.dob), 'yyyy-MM-dd'),
+        avatar: '',
         classroom_id: props.student.classroom?.id ?? '',
         inactive: props.student.inactive,
     });
 
+    const preview = ref(props.student.avatar ?? '');
+
+    const handleImage = async (e) => {
+        const file = e.target.files[0];
+        const compressedFile = ref(null);
+
+        const options = {
+            maxSizeMB: 0.25, // (Max size in MB)
+            maxWidthOrHeight: 400, // Resize width/height
+            useWebWorker: true, // Improves performance
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            compressedFile.value = new File([compressedBlob], file.name, {
+                type: compressedBlob.type,
+            });
+
+            preview.value = URL.createObjectURL(compressedFile.value);
+            form.avatar = compressedFile.value;
+        } catch (error) {
+            form.setError('avatar', 'Houve um problema ao carregar a imagem');
+        }
+    };
+
     const submit = () => {
-        form.patch(route('students.update', props.student));
+        //form.patch(route('students.update', props.student));
+
+        router.post(route('students.update', props.student), {
+            _method: 'patch',
+            name: form.name,
+            dob: form.dob,
+            avatar: form.avatar,
+            classroom_id: form.classroom_id ?? '',
+            inactive: form.inactive,
+        });
     };
 </script>
 
@@ -42,6 +80,32 @@
                                 <p class="mt-1 text-sm/6 text-gray-600">Atualização de dados.</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                    <div class="sm:col-span-4">
+                                        <div class="mt-2 flex items-center gap-x-3">
+                                            <UserCircleIcon
+                                                v-if="!student.avatar"
+                                                class="size-14 text-gray-300"
+                                                aria-hidden="true" />
+                                            <img
+                                                v-else
+                                                class="inline-block size-14 rounded-full"
+                                                :src="preview"
+                                                alt="Avatar" />
+                                            <input
+                                                id="avatar"
+                                                @input="(e) => handleImage(e)"
+                                                type="file"
+                                                class="hidden" />
+                                            <label
+                                                for="avatar"
+                                                class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                Selecionar Foto
+                                            </label>
+                                        </div>
+
+                                        <InputError class="mt-2" :message="form.errors.avatar" />
+                                    </div>
+
                                     <div class="sm:col-span-4">
                                         <InputLabel for="name" value="Nome" />
 

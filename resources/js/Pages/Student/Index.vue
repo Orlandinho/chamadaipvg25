@@ -5,6 +5,7 @@
     import { useConfirm } from '@/Composables/useConfirm.js';
     import { format, differenceInYears } from 'date-fns';
     import Pagination from '@/Components/Pagination.vue';
+    import DefaultAvatar from '@/Components/DefaultAvatar.vue';
 
     const props = defineProps({
         students: Object,
@@ -69,7 +70,7 @@
                                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                     <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
                                         <table class="min-w-full divide-y divide-gray-300">
-                                            <thead class="bg-gray-50">
+                                            <thead class="bg-green-50">
                                                 <tr>
                                                     <th
                                                         scope="col"
@@ -100,22 +101,23 @@
                                             <tbody class="divide-y divide-gray-200 bg-white">
                                                 <tr v-for="student in students.data" :key="student.id">
                                                     <td
-                                                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6"
+                                                        class="whitespace-nowrap py-3 pl-4 pr-3 text-sm font-medium sm:pl-6"
                                                         :class="student.inactive ? 'text-red-400' : 'text-gray-900'">
                                                         <Link
                                                             :href="route('students.show', student)"
-                                                            class="hover:underline">
-                                                            {{ student.name }}
+                                                            class="flex-inline hover:underline items-center">
+                                                            <DefaultAvatar :person="student" size="size-8" />
+                                                            <span class="ml-4">{{ student.name }}</span>
                                                         </Link>
                                                     </td>
-                                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                    <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                                                         {{ formattedDob(student.dob) }}
                                                     </td>
-                                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                    <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
                                                         {{ formattedAge(student.dob) }}
                                                     </td>
                                                     <td
-                                                        class="whitespace-nowrap px-3 py-4 text-sm"
+                                                        class="whitespace-nowrap px-3 py-3 text-sm"
                                                         :class="student.classroom ? 'text-gray-500' : 'text-red-400'">
                                                         {{
                                                             student.classroom
@@ -124,7 +126,7 @@
                                                         }}
                                                     </td>
                                                     <td
-                                                        class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                                        class="relative whitespace-nowrap py-3 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                         <div class="flex space-x-2">
                                                             <Link :href="route('students.edit', student)">
                                                                 <PencilSquareIcon

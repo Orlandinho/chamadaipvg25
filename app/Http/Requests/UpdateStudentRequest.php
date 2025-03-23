@@ -51,6 +51,8 @@ class UpdateStudentRequest extends FormRequest
             'dob' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'inactive' => ['required','boolean'],
+            'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:250'],
+            'contact' => ['nullable', 'string', 'max:15']
         ];
     }
 }

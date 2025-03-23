@@ -1,5 +1,6 @@
 <script setup>
     import { differenceInYears, format, parseISO } from 'date-fns';
+    import { HeartIcon } from '@heroicons/vue/24/solid/index.js';
 
     const props = defineProps({
         marriage_birthdays: Object,
@@ -18,7 +19,7 @@
 
 <template>
     <div class="overflow-hidden rounded-xl border border-gray-200">
-        <div class="border-b border-gray-900/5 bg-green-100 px-6 py-2">
+        <div class="border-b border-gray-900/5 bg-green-50 px-6 py-2">
             <div class="text-sm/6 text-center font-medium text-gray-900">
                 Aniversários de Casamento de {{ sunday.previous + ' a ' + sunday.next }}
             </div>
@@ -32,8 +33,10 @@
                 v-for="birthday in marriage_birthdays"
                 :key="birthday.id"
                 class="flex justify-between gap-x-4 py-2">
-                <div class="text-gray-500">
-                    {{ birthday.husband.split(' ')[0] + ' e ' + birthday.wife.split(' ')[0] }}
+                <div class="text-gray-500 flex items-center gap-2">
+                    {{ birthday.husband.split(' ')[0] + ' ' }}
+                    <HeartIcon class="size-3 text-red-600" />
+                    {{ ' ' + birthday.wife.split(' ')[0] }}
                 </div>
                 <div class="text-gray-700">{{ formattedDob(birthday.marriage_date) }}</div>
                 <div class="text-gray-700">{{ formattedAge(birthday.marriage_date) + birthday.bodas }}</div>

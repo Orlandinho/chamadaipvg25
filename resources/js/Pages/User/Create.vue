@@ -6,6 +6,9 @@
     import TextInput from '@/Components/TextInput.vue';
     import SelectInput from '@/Components/SelectInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import { ref } from 'vue';
+    import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
+    import imageCompression from 'browser-image-compression';
 
     const props = defineProps({
         roles: Object,
@@ -17,7 +20,33 @@
         email: '',
         role_id: '',
         classroom_id: '',
+        avatar: '',
     });
+
+    const preview = ref('');
+
+    const handleImage = async (e) => {
+        const file = e.target.files[0];
+        const compressedFile = ref(null);
+
+        const options = {
+            maxSizeMB: 0.25, // (Max size in MB)
+            maxWidthOrHeight: 400, // Resize width/height
+            useWebWorker: true, // Improves performance
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            compressedFile.value = new File([compressedBlob], file.name, {
+                type: compressedBlob.type,
+            });
+
+            preview.value = URL.createObjectURL(compressedFile.value);
+            form.avatar = compressedFile.value;
+        } catch (error) {
+            form.setError('avatar', 'Houve um problema ao carregar a imagem');
+        }
+    };
 
     const submit = () => {
         form.post(route('users.store'));
@@ -29,7 +58,7 @@
 
     <AuthenticatedLayout>
         <div class="py-12">
-            <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
@@ -44,6 +73,34 @@
                                 </p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                    <div class="sm:col-span-4">
+                                        <div class="mt-2 flex items-center gap-x-3">
+                                            <UserCircleIcon
+                                                v-if="!preview"
+                                                class="size-14 text-gray-300"
+                                                aria-hidden="true" />
+                                            <img
+                                                v-else
+                                                class="inline-block size-14 rounded-full"
+                                                :src="preview"
+                                                alt="Avatar" />
+                                            <input
+                                                id="avatar"
+                                                accept="image/*"
+                                                @input="(e) => handleImage(e)"
+                                                type="file"
+                                                class="hidden" />
+                                            <label
+                                                for="avatar"
+                                                class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                Selecionar Foto
+                                            </label>
+                                        </div>
+                                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                            {{ form.progress.percentage }}%
+                                        </progress>
+                                        <InputError class="mt-2" :message="form.errors.avatar" />
+                                    </div>
                                     <div class="sm:col-span-3">
                                         <InputLabel for="name" value="Nome" />
 

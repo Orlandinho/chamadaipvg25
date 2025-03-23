@@ -6,6 +6,10 @@
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import SelectInput from '@/Components/SelectInput.vue';
+    import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
+    import { vMaska } from 'maska/vue';
+    import { ref } from 'vue';
+    import imageCompression from 'browser-image-compression';
 
     defineProps({
         classrooms: Object,
@@ -14,8 +18,35 @@
     const form = useForm({
         name: '',
         dob: '',
+        avatar: '',
+        contact: '',
         classroom_id: '',
     });
+
+    const preview = ref('');
+
+    const handleImage = async (e) => {
+        const file = e.target.files[0];
+        const compressedFile = ref(null);
+
+        const options = {
+            maxSizeMB: 0.25, // (Max size in MB)
+            maxWidthOrHeight: 400, // Resize width/height
+            useWebWorker: true, // Improves performance
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            compressedFile.value = new File([compressedBlob], file.name, {
+                type: compressedBlob.type,
+            });
+
+            preview.value = URL.createObjectURL(compressedFile.value);
+            form.avatar = compressedFile.value;
+        } catch (error) {
+            form.setError('avatar', 'Houve um problema ao carregar a imagem');
+        }
+    };
 
     const submit = () => {
         form.post(route('students.store'));
@@ -26,10 +57,6 @@
     <Head title="Novo Aluno" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Alunos</h2>
-        </template>
-
         <div class="py-12">
             <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
@@ -40,6 +67,31 @@
                                 <p class="mt-1 text-sm/6 text-gray-600">Nome e data de nascimento são obrigatórios.</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                    <div class="sm:col-span-4">
+                                        <div class="mt-2 flex items-center gap-x-3">
+                                            <UserCircleIcon
+                                                v-if="!preview"
+                                                class="size-14 text-gray-300"
+                                                aria-hidden="true" />
+                                            <img
+                                                v-else
+                                                class="inline-block size-14 rounded-full"
+                                                :src="preview"
+                                                alt="Avatar" />
+                                            <input
+                                                id="avatar"
+                                                @input="(e) => handleImage(e)"
+                                                type="file"
+                                                class="hidden" />
+                                            <label
+                                                for="avatar"
+                                                class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                Selecionar Foto
+                                            </label>
+                                        </div>
+
+                                        <InputError class="mt-2" :message="form.errors.avatar" />
+                                    </div>
                                     <div class="sm:col-span-4">
                                         <InputLabel for="name" value="Nome" />
 
@@ -77,6 +129,20 @@
                                             v-model="form.classroom_id" />
 
                                         <InputError class="mt-2" :message="form.errors.classroom_id" />
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <InputLabel for="contact" value="Contato" />
+
+                                        <TextInput
+                                            id="contact"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            v-maska="{ mask: ['(##) ####-####', '(##) #####-####'] }"
+                                            maxlength="15"
+                                            v-model="form.contact" />
+
+                                        <InputError class="mt-2" :message="form.errors.contact" />
                                     </div>
                                 </div>
                             </div>

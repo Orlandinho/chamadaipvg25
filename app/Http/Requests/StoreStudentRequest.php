@@ -44,6 +44,8 @@ class StoreStudentRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255', 'unique:students'],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'dob' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
+            'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:250'],
+            'contact' => ['nullable', 'string', 'max:15'],
         ];
     }
 }

@@ -59,7 +59,7 @@ class ClassroomController extends Controller
     public function show(Classroom $classroom): Response
     {
         return inertia("Classroom/Show", [
-            "classroom" => new ClassroomResource($classroom->loadCount('students')->load('teachers')),
+            "classroom" => new ClassroomResource($classroom->loadCount('active_students')->load('teachers')),
         ]);
     }
 

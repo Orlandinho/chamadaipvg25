@@ -35,7 +35,9 @@ class StoreCoupleRequest extends FormRequest
         return [
             'husband' => ['required','string','max:100'],
             'wife' => ['required','string','max:100'],
-            'slug' => ['required','string','max:150','unique:couples,slug'],
+            'husband_avatar' => ['nullable','mimes:jpeg,png,jpg','image','max:250'],
+            'wife_avatar' => ['nullable','image','mimes:jpeg,png,jpg','max:250'],
+            'slug' => ['required','string','max:200','unique:couples,slug'],
             'marriage_date' => ['required','date','before_or_equal:today'],
         ];
     }

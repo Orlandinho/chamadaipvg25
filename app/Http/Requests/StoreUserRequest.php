@@ -47,6 +47,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required','string','max:255'],
             'slug' => ['required','string','max:255'],
+            'avatar' => ['nullable','image','mimes:jpeg,png,jpg','max:250'],
             'email' => ['required','email','max:255'],
             'role_id' => ['required', Rule::enum(Roles::class)],
             'classroom_id' => ['nullable', Rule::requiredIf($this->role_id === 3), Rule::exists('classrooms', 'id')],

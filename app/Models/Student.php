@@ -12,7 +12,7 @@ class Student extends Model
     /** @use HasFactory<\Database\Factories\StudentFactory> */
     use HasFactory;
 
-    protected $fillable = ['classroom_id', 'name', 'slug', 'dob', 'inactive'];
+    protected $fillable = ['classroom_id', 'name', 'slug', 'dob', 'avatar', 'contact', 'inactive'];
 
     public function classroom(): BelongsTo
     {

@@ -12,7 +12,7 @@
     <nav class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
         <div class="-mt-px flex w-0 flex-1">
             <Link
-                :href="links.prev"
+                :href="links.prev || 'null'"
                 :disabled="!links.prev"
                 preserve-scroll
                 :class="{
@@ -24,7 +24,7 @@
                     class="mr-3 size-5"
                     :class="links.prev ? 'text-gray-400' : 'text-gray-300'"
                     aria-hidden="true" />
-                Previous
+                Anterior
             </Link>
         </div>
         <div class="hidden md:-mt-px md:flex">
@@ -35,7 +35,7 @@
                     v-html="link.label"
                     preserve-scroll
                     :class="{
-                        'border-indigo-500 text-indigo-600': link.active,
+                        'border-green-600 text-green-700': link.active,
                         'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': !link.active,
                     }"
                     class="inline-flex items-center border-t-2 px-4 pt-4 text-sm font-medium" />
@@ -43,7 +43,7 @@
         </div>
         <div class="-mt-px flex w-0 flex-1 justify-end">
             <Link
-                :href="links.next"
+                :href="links.next ?? 'null'"
                 :disabled="!links.next"
                 preserve-scroll
                 :class="{
@@ -51,7 +51,7 @@
                     'text-gray-300 cursor-default': !links.next,
                 }"
                 class="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium">
-                Next
+                Próximo
                 <ArrowLongRightIcon
                     class="ml-3 size-5"
                     :class="links.next ? 'text-gray-400' : 'text-gray-300'"

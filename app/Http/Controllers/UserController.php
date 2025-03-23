@@ -11,6 +11,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 
 class UserController extends Controller
@@ -47,8 +48,13 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): RedirectResponse
     {
+        dd($request->validated('avatar'));
+        $data = $request->validated();
         try {
-            User::create($request->validated());
+            if($request->hasFile('avatar')) {
+                $data['avatar'] = Storage::disk('public')->put('avatars', $request->file('avatar'));
+            }
+            User::create($data);
         } catch (\Exception $e) {
             return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte.');
         }
@@ -83,8 +89,17 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        $data = $request->validated();
         try {
-            $user->update($request->validated());
+            if ($request->hasFile('avatar')) {
+                if($user->avatar){
+                    Storage::disk('public')->delete($user->avatar);
+                }
+                $data['avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
+            } else {
+                $data['avatar'] = $user->avatar;
+            }
+            $user->update($data);
         } catch (\Exception $e) {
             return back()->alertFailure('Não foi possível realizar a atualização dos dados. Se o problema persistir entre em contato com o suporte.');
         }
@@ -98,6 +113,9 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         try {
+            if($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
             $user->delete();
         } catch (\Exception $e) {
             return back()->alertFailure("Não foi possível excluir os dados do colaborador(a) {$user->name}. Se o problema persistir entre em contato com o suporte.");

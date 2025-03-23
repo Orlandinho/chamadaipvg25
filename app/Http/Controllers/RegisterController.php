@@ -10,7 +10,6 @@ use App\Models\Register;
 use App\Models\Student;
 use App\Models\Visitant;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Response;
 
 class RegisterController extends Controller
@@ -33,6 +32,7 @@ class RegisterController extends Controller
                 })
                 ->with('registers')
                 ->where('inactive', false)
+                ->where('classroom_id', ! null)
                 ->orderBy('name')
                 ->get());
             $visitants = VisitantResource::collection(Visitant::query()

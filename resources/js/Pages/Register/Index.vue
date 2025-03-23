@@ -10,6 +10,7 @@
     } from '@heroicons/vue/24/outline/index.js';
     import { format, subWeeks, subMonths, isSunday, eachWeekendOfInterval } from 'date-fns';
     import { computed, ref, watch } from 'vue';
+    import DefaultAvatar from '@/Components/DefaultAvatar.vue';
 
     const props = defineProps({
         students: Object,
@@ -53,7 +54,7 @@
         days.forEach((day) => {
             if (isSunday(day)) {
                 results.push({
-                    formatted: format(day, 'dd/MM/yyyy'),
+                    formatted: format(day, 'dd/MM/yy'),
                     database: format(day, 'yyyy-MM-dd'),
                 });
             }
@@ -103,25 +104,25 @@
                                 <div v-if="students.length < 1">
                                     <h1 class="text-base font-semibold text-gray-900">Registro de Chamada</h1>
                                     <p class="mt-2 text-sm text-gray-700">
-                                        Ainda não há nenhum aluno registrado. Clique no botão ao lado para registrar um
-                                        novo aluno
+                                        Ainda não há nenhum aluno ativo que esteja registrado em alguma classe. Clique
+                                        no botão ao lado para registrar um novo aluno
                                     </p>
                                 </div>
                                 <div v-else>
                                     <h2 v-if="visitants.length < 1" class="text-base font-semibold mb-1 text-gray-900">
                                         Não há visitantes
                                     </h2>
-                                    <h2 v-if="visitants.length > 0" class="text-base font-semibold mb-1 text-gray-900">
-                                        Visitantes
-                                    </h2>
-                                    <ul role="list" class="text-xs text-gray-600">
-                                        <li v-for="visit in visitants" :key="visit.id" class="py-.5">
-                                            {{ visit.name }}
-                                        </li>
-                                    </ul>
+                                    <div v-else>
+                                        <h2 class="text-base font-semibold mb-1 text-gray-900">Visitantes</h2>
+                                        <ul role="list" class="text-xs text-gray-600">
+                                            <li v-for="visit in visitants" :key="visit.id" class="py-.5">
+                                                {{ visit.name }}
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                            <div v-if="$page.props.auth.user.role_id < 3">
+                            <div v-if="$page.props.auth.user.role_id < 3 && students.length > 0">
                                 <select
                                     v-model="filter"
                                     class="rounded-md py-1 pl-3 pr-8 border-gray-300 shadow-sm text-sm/6 focus:border-indigo-500 focus:ring-indigo-500">
@@ -161,11 +162,11 @@
                                     </div>
                                     <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
                                         <table class="min-w-full divide-y divide-gray-300">
-                                            <thead class="bg-gray-50">
+                                            <thead class="bg-green-50">
                                                 <tr>
                                                     <th
                                                         scope="col"
-                                                        class="py-3 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                        class="py-3 pl-4 pr-3 min-w-[250px] sm:min-w-[0] text-left text-sm font-semibold text-gray-900 sm:pl-6">
                                                         Nome
                                                     </th>
 
@@ -173,7 +174,7 @@
                                                         v-for="sunday in sundays"
                                                         :key="sunday.formatted"
                                                         scope="col"
-                                                        class="px-3 py-3 text-left text-sm font-semibold text-gray-900">
+                                                        class="px-3 py-3 text-center text-sm font-semibold text-gray-900">
                                                         {{ sunday.formatted }}
                                                     </th>
                                                 </tr>
@@ -184,15 +185,16 @@
                                                         class="whitespace-nowrap py-3 pl-2 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                                         <Link
                                                             :href="route('students.show', student)"
-                                                            class="hover:underline">
-                                                            {{ student.name }}
+                                                            class="flex-inline hover:underline items-center">
+                                                            <DefaultAvatar :person="student" size="size-8" />
+                                                            <span class="ml-4">{{ student.name }}</span>
                                                         </Link>
                                                     </td>
 
                                                     <td
                                                         v-for="sunday in sundays"
                                                         :key="sunday.database"
-                                                        class="whitespace-nowrap px-3 py-3 font text-sm text-gray-500">
+                                                        class="whitespace-nowrap text-center px-3 py-3 font text-sm text-gray-500">
                                                         <Link
                                                             :href="
                                                                 route('registers.update', {
@@ -203,6 +205,7 @@
                                                             "
                                                             method="patch"
                                                             as="button"
+                                                            class="p-2"
                                                             preserve-scroll>
                                                             <component
                                                                 :is="
@@ -218,7 +221,7 @@
                                                                           )
                                                                         : MinusIcon
                                                                 "
-                                                                class="w-5 h-5"
+                                                                class="size-5"
                                                                 :class="
                                                                     student.registers.find(function (el) {
                                                                         return el.sunday === sunday.database;

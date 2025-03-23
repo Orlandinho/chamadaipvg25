@@ -10,7 +10,7 @@ class Couple extends Model
     /** @use HasFactory<\Database\Factories\CoupleFactory> */
     use HasFactory;
 
-    protected $fillable = ['husband', 'wife', 'slug', 'marriage_date'];
+    protected $fillable = ['husband', 'wife', 'slug', 'husband_avatar', 'wife_avatar', 'marriage_date'];
 
     protected function casts(): array
     {

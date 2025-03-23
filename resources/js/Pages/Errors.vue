@@ -41,7 +41,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-neutral-900">
                         <div class="text-center">
-                            <img src="/storage/images/error_small.png" :alt="title" class="mb-6 text-center mx-auto" />
+                            <img src="/storage/images/logo-da-IPVG.png" :alt="title" class="mb-6 text-center mx-auto" />
                             <p class="text-base font-semibold">{{ error }}</p>
                             <p class="text-base font-semibold">{{ title }}</p>
                             <p class="mt-6 text-base leading-7">
@@ -50,7 +50,7 @@
                             <div class="mt-10 flex items-center justify-center">
                                 <Link
                                     :href="route('dashboard')"
-                                    class="text-md font-semibold text-blue-500 hover:underline">
+                                    class="text-md font-semibold text-green-800 hover:underline">
                                     Voltar ao Dashboard
                                 </Link>
                             </div>

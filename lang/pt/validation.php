@@ -39,6 +39,10 @@ return [
             'required' => 'É necessário incluir uma descrição',
             'max' => 'A descrição está muito longa'
         ],
+        'contact' => [
+            'string' => 'Apenas texto nesse campo',
+            'max' => 'O contato não pode exceder :max caracteres',
+        ],
         'dob' => [
             'required' => 'A data de nascimento é necessária',
             'date' => 'Data inválida',
@@ -58,6 +62,21 @@ return [
             'date' => 'Data inválida',
             'date_format' => 'A data não está no formato correto',
             'before_or_equal' => 'A data precisa ser uma data anterior a hoje'
+        ],
+        'avatar' => [
+            'image' => 'O tipo de arquivo precisa ser uma imagem',
+            'max' => 'O arquivo é muito grande',
+            'mimes' => 'Somente os arquivos jpeg, jpg, ou png são aceitos',
+        ],
+        'husband_avatar' => [
+            'image' => 'O tipo de arquivo precisa ser uma imagem',
+            'max' => 'O arquivo é muito grande',
+            'mimes' => 'Somente os arquivos jpeg, jpg, ou png são aceitos',
+        ],
+        'wife_avatar' => [
+            'image' => 'O tipo de arquivo precisa ser uma imagem',
+            'max' => 'O arquivo é muito grande',
+            'mimes' => 'Somente os arquivos jpeg, jpg, ou png são aceitos',
         ],
     ],
 

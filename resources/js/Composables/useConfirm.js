@@ -17,6 +17,7 @@ export function useConfirm() {
             globalState.resolver = null;
         }, 400);
     };
+
     return {
         state: readonly(globalState),
         confirmation: (message, title = 'Atenção!') => {

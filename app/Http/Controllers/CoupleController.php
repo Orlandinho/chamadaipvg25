@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Bodas;
-use App\Enums\Roles;
 use App\Http\Resources\CoupleResource;
 use App\Models\Couple;
 use App\Http\Requests\StoreCoupleRequest;
 use App\Http\Requests\UpdateCoupleRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 
 class CoupleController extends Controller
@@ -16,7 +15,7 @@ class CoupleController extends Controller
     public function __construct()
     {
         if (Auth::user()->role_id > 2) {
-            abort(404);
+            abort(403);
         }
     }
 
@@ -43,8 +42,15 @@ class CoupleController extends Controller
      */
     public function store(StoreCoupleRequest $request)
     {
+        $data = $request->validated();
         try {
-            Couple::create($request->validated());
+            if($request->hasFile('husband_avatar')) {
+                $data['husband_avatar'] = Storage::disk('public')->put('avatars', $request->file('husband_avatar'));
+            }
+            if($request->hasFile('wife_avatar')) {
+                $data['wife_avatar'] = Storage::disk('public')->put('avatars', $request->file('wife_avatar'));
+            }
+            Couple::create($data);
         } catch (\Exception $e) {
             return back()->alertFailure('Não foi possível salvar as informações. Se o problema persistir entre em contato com o suporte.');
         }
@@ -58,7 +64,7 @@ class CoupleController extends Controller
     public function edit(Couple $couple): Response
     {
         return inertia('Couple/Edit', [
-            'couple' => $couple,
+            'couple' => CoupleResource::make($couple),
         ]);
     }
 
@@ -67,8 +73,25 @@ class CoupleController extends Controller
      */
     public function update(UpdateCoupleRequest $request, Couple $couple)
     {
+        $data = $request->validated();
         try {
-            $couple->update($request->validated());
+            if ($request->hasFile('husband_avatar')) {
+                if($couple->husband_avatar){
+                    Storage::disk('public')->delete($couple->husband_avatar);
+                }
+                $data['husband_avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
+            } else {
+                $data['husband_avatar'] = $couple->husband_avatar;
+            }
+            if ($request->hasFile('husband_avatar')) {
+                if($couple->wife_avatar){
+                    Storage::disk('public')->delete($couple->wife_avatar);
+                }
+                $data['wife_avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
+            } else {
+                $data['wife_avatar'] = $couple->wife_avatar;
+            }
+            $couple->update($data);
         } catch (\Exception $e) {
             return back()->AlertFailure('Não foi possível atualizar as informações do casal');
         }
@@ -82,6 +105,12 @@ class CoupleController extends Controller
     public function destroy(Couple $couple)
     {
         try {
+            if($couple->husband_avatar) {
+                Storage::disk('public')->delete($couple->husband_avatar);
+            }
+            if($couple->wife_avatar) {
+                Storage::disk('public')->delete($couple->wife_avatar);
+            }
             $couple->delete();
         } catch (\Exception $e) {
             return back()->alertFailure('Não foi possível apagar os dados  do casal');

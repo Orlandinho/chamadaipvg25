@@ -1,11 +1,14 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, useForm, Link } from '@inertiajs/vue3';
+    import { Head, useForm, Link, router } from '@inertiajs/vue3';
     import InputLabel from '@/Components/InputLabel.vue';
     import InputError from '@/Components/InputError.vue';
     import TextInput from '@/Components/TextInput.vue';
     import SelectInput from '@/Components/SelectInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import { ref } from 'vue';
+    import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
+    import imageCompression from 'browser-image-compression';
 
     const props = defineProps({
         user: Object,
@@ -16,14 +19,47 @@
     const form = useForm({
         name: props.user.name,
         email: props.user.email,
+        avatar: props.user.avatar,
         role_id: props.user.role_id,
         classroom_id: props.user.classroom?.id ?? '',
     });
 
-    console.log(props.user);
+    const preview = ref(props.user.avatar ?? '');
+
+    const handleImage = async (e) => {
+        const file = e.target.files[0];
+        const compressedFile = ref(null);
+
+        const options = {
+            maxSizeMB: 0.25, // (Max size in MB)
+            maxWidthOrHeight: 400, // Resize width/height
+            useWebWorker: true, // Improves performance
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            compressedFile.value = new File([compressedBlob], file.name, {
+                type: compressedBlob.type,
+            });
+
+            preview.value = URL.createObjectURL(compressedFile.value);
+            form.avatar = compressedFile.value;
+        } catch (error) {
+            form.setError('avatar', 'Houve um problema ao carregar a imagem');
+        }
+    };
 
     const submit = () => {
-        form.patch(route('users.update', props.user));
+        //form.patch(route('users.update', props.user));
+
+        router.post(route('users.update', props.user), {
+            _method: 'patch',
+            name: form.name,
+            email: form.email,
+            avatar: form.avatar,
+            role_id: form.role_id,
+            classroom_id: form.classroom?.id ?? '',
+        });
     };
 </script>
 
@@ -32,7 +68,7 @@
 
     <AuthenticatedLayout>
         <div class="py-12">
-            <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
@@ -41,6 +77,35 @@
                                 <p class="mt-1 text-sm/6 text-gray-600">Atualização de dados</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                    <div class="sm:col-span-4">
+                                        <div class="mt-2 flex items-center gap-x-3">
+                                            <UserCircleIcon
+                                                v-if="!form.avatar"
+                                                class="size-14 text-gray-300"
+                                                aria-hidden="true" />
+                                            <img
+                                                v-else
+                                                class="inline-block size-14 rounded-full"
+                                                :src="preview"
+                                                alt="Avatar" />
+                                            <input
+                                                id="avatar"
+                                                @input="(e) => handleImage(e)"
+                                                type="file"
+                                                class="hidden" />
+                                            <div class="flex items-center gap-x-3">
+                                                <label
+                                                    for="avatar"
+                                                    class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                    Selecionar Foto
+                                                </label>
+                                                <span class="text-gray-500 text-xs">Limite de 250kb</span>
+                                            </div>
+                                        </div>
+
+                                        <InputError class="mt-2" :message="form.errors.avatar" />
+                                    </div>
+
                                     <div class="col-span-1 sm:col-span-3">
                                         <InputLabel for="name" value="Nome" />
 

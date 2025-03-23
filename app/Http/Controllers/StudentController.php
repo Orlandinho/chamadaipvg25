@@ -59,7 +59,7 @@ class StudentController extends Controller
             }
             Student::create($data);
         } catch (\Exception $e) {
-            return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte. ' .  $e->getMessage());
+            return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte');
         }
 
         return to_route('students.index')->alertSuccess('Cadastro realizado com sucesso!');

@@ -86,7 +86,7 @@
                                                 alt="Avatar" />
                                             <input
                                                 id="avatar"
-                                                accept="image/*"
+                                                accept=".png, .jpeg, .jpg"
                                                 @input="(e) => handleImage(e)"
                                                 type="file"
                                                 class="hidden" />

@@ -44,7 +44,7 @@
             preview.value = URL.createObjectURL(compressedFile.value);
             form.avatar = compressedFile.value;
         } catch (error) {
-            form.setError('avatar', 'Houve um problema ao carregar a imagem');
+            form.setError('avatar', 'Houve um problema ao carregar o arquivo');
         }
     };
 
@@ -82,6 +82,7 @@
                                                 id="avatar"
                                                 @input="(e) => handleImage(e)"
                                                 type="file"
+                                                accept=".png, .jpeg, .jpg"
                                                 class="hidden" />
                                             <label
                                                 for="avatar"
@@ -89,7 +90,9 @@
                                                 Selecionar Foto
                                             </label>
                                         </div>
-
+                                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                            {{ form.progress.percentage }}%
+                                        </progress>
                                         <InputError class="mt-2" :message="form.errors.avatar" />
                                     </div>
                                     <div class="sm:col-span-4">
@@ -138,6 +141,7 @@
                                             id="contact"
                                             type="text"
                                             class="mt-1 block w-full"
+                                            placeholder="(11) 91234-5678/9123-4567"
                                             v-maska="{ mask: ['(##) ####-####', '(##) #####-####'] }"
                                             maxlength="15"
                                             v-model="form.contact" />

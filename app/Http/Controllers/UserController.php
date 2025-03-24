@@ -48,7 +48,6 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        dd($request->validated('avatar'));
         $data = $request->validated();
         try {
             if($request->hasFile('avatar')) {

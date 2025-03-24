@@ -47,7 +47,7 @@
 </script>
 
 <template>
-    <Head title="Visitantes" />
+    <Head title="Casais" />
 
     <AuthenticatedLayout>
         <div class="py-12">

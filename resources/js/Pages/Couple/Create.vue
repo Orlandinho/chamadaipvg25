@@ -100,6 +100,7 @@
                                             <input
                                                 id="husband_avatar"
                                                 @input="(e) => handleHusbandImage(e)"
+                                                accept=".png, .jpeg, .jpg"
                                                 type="file"
                                                 class="hidden" />
                                             <label
@@ -108,6 +109,10 @@
                                                 Foto do Esposo
                                             </label>
                                         </div>
+                                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                            {{ form.progress.percentage }}%
+                                        </progress>
+                                        <InputError class="mt-2" :message="form.errors.husband_avatar" />
                                     </div>
 
                                     <div class="sm:col-span-3">
@@ -124,6 +129,7 @@
                                             <input
                                                 id="wife_avatar"
                                                 @input="(e) => handleWifeImage(e)"
+                                                accept=".png, .jpeg, .jpg"
                                                 type="file"
                                                 class="hidden" />
                                             <label
@@ -132,6 +138,10 @@
                                                 Foto da Esposa
                                             </label>
                                         </div>
+                                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                            {{ form.progress.percentage }}%
+                                        </progress>
+                                        <InputError class="mt-2" :message="form.errors.wife_avatar" />
                                     </div>
                                     <div class="sm:col-span-3">
                                         <InputLabel for="husband" value="Esposo" />

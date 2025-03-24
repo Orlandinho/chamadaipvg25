@@ -92,6 +92,7 @@
                                                 id="avatar"
                                                 @input="(e) => handleImage(e)"
                                                 type="file"
+                                                accept=".png, .jpeg, .jpg"
                                                 class="hidden" />
                                             <div class="flex items-center gap-x-3">
                                                 <label
@@ -99,10 +100,11 @@
                                                     class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                                                     Selecionar Foto
                                                 </label>
-                                                <span class="text-gray-500 text-xs">Limite de 250kb</span>
                                             </div>
                                         </div>
-
+                                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                            {{ form.progress.percentage }}%
+                                        </progress>
                                         <InputError class="mt-2" :message="form.errors.avatar" />
                                     </div>
 

@@ -79,7 +79,7 @@ class CoupleController extends Controller
                 if($couple->husband_avatar){
                     Storage::disk('public')->delete($couple->husband_avatar);
                 }
-                $data['husband_avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
+                $data['husband_avatar'] = Storage::disk('public')->put('avatars', $request->husband_avatar);
             } else {
                 $data['husband_avatar'] = $couple->husband_avatar;
             }
@@ -87,7 +87,7 @@ class CoupleController extends Controller
                 if($couple->wife_avatar){
                     Storage::disk('public')->delete($couple->wife_avatar);
                 }
-                $data['wife_avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
+                $data['wife_avatar'] = Storage::disk('public')->put('avatars', $request->wife_avatar);
             } else {
                 $data['wife_avatar'] = $couple->wife_avatar;
             }

@@ -12,6 +12,7 @@
     <nav class="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
         <div class="-mt-px flex w-0 flex-1">
             <Link
+                as="button"
                 :href="links.prev || 'null'"
                 :disabled="!links.prev"
                 preserve-scroll
@@ -43,6 +44,7 @@
         </div>
         <div class="-mt-px flex w-0 flex-1 justify-end">
             <Link
+                as="button"
                 :href="links.next ?? 'null'"
                 :disabled="!links.next"
                 preserve-scroll

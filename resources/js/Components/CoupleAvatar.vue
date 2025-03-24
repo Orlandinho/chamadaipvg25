@@ -18,13 +18,13 @@
     });
 
     const husbandInitials = computed(() => {
-        let initials = props.couple.name.split(' ');
+        let initials = props.couple.husband.split(' ');
 
         return initials.length > 1 ? initials[0].charAt() + initials[1].charAt() : initials[0].charAt();
     });
 
     const wifeInitials = computed(() => {
-        let initials = props.couple.name.split(' ');
+        let initials = props.couple.wife.split(' ');
 
         return initials.length > 1 ? initials[0].charAt() + initials[1].charAt() : initials[0].charAt();
     });

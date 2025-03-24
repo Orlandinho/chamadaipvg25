@@ -11,6 +11,7 @@
     import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
     import { ref } from 'vue';
     import imageCompression from 'browser-image-compression';
+    import { vMaska } from 'maska/vue';
 
     const props = defineProps({
         student: Object,
@@ -21,6 +22,7 @@
         name: props.student.name,
         dob: format(new Date(props.student.dob), 'yyyy-MM-dd'),
         avatar: '',
+        contact: props.student.contact,
         classroom_id: props.student.classroom?.id ?? '',
         inactive: props.student.inactive,
     });
@@ -95,6 +97,7 @@
                                                 id="avatar"
                                                 @input="(e) => handleImage(e)"
                                                 type="file"
+                                                accept=".png, .jpeg, .jpg"
                                                 class="hidden" />
                                             <label
                                                 for="avatar"
@@ -103,6 +106,9 @@
                                             </label>
                                         </div>
 
+                                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                            {{ form.progress.percentage }}%
+                                        </progress>
                                         <InputError class="mt-2" :message="form.errors.avatar" />
                                     </div>
 
@@ -143,6 +149,21 @@
                                             v-model="form.classroom_id" />
 
                                         <InputError class="mt-2" :message="form.errors.classroom_id" />
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <InputLabel for="contact" value="Contato" />
+
+                                        <TextInput
+                                            id="contact"
+                                            type="text"
+                                            class="mt-1 block w-full"
+                                            placeholder="(11) 91234-5678/9123-4567"
+                                            v-maska="{ mask: ['(##) ####-####', '(##) #####-####'] }"
+                                            maxlength="15"
+                                            v-model="form.contact" />
+
+                                        <InputError class="mt-2" :message="form.errors.contact" />
                                     </div>
 
                                     <div class="sm:col-span-3">

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\CoupleController;
+use App\Http\Controllers\CSVImportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
@@ -73,6 +74,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/casais/{couple:slug}/editar', 'edit')->name('couples.edit');
         Route::patch('/casais/{couple}', 'update')->name('couples.update');
         Route::delete('/casais/{couple}', 'destroy')->name('couples.destroy');
+    });
+
+    Route::controller(CSVImportController::class)->group(function () {
+        Route::post('/import/students', 'importStudents')->name('import.students');
+        Route::post('/import/couples', 'importCouples')->name('import.couples');
     });
 
 });

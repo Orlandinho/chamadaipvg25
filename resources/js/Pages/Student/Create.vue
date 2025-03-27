@@ -1,12 +1,12 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, useForm, Link } from '@inertiajs/vue3';
+    import { Head, useForm, Link, router } from '@inertiajs/vue3';
     import InputLabel from '@/Components/InputLabel.vue';
     import InputError from '@/Components/InputError.vue';
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import SelectInput from '@/Components/SelectInput.vue';
-    import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
+    import { DocumentIcon, UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
     import { vMaska } from 'maska/vue';
     import { ref } from 'vue';
     import imageCompression from 'browser-image-compression';
@@ -24,6 +24,25 @@
     });
 
     const preview = ref('');
+
+    const loaded = ref(null);
+
+    const handleCSV = (e) => {
+        loaded.value = e.target.files[0];
+    };
+
+    const sendCSV = () => {
+        router.post(
+            route('import.students'),
+            { students_csv: loaded.value },
+            {
+                forceFormData: true,
+                onSuccess: (data) => {
+                    loaded.value = 'Dados inseridos';
+                },
+            },
+        );
+    };
 
     const handleImage = async (e) => {
         const file = e.target.files[0];
@@ -57,15 +76,43 @@
     <Head title="Novo Aluno" />
 
     <AuthenticatedLayout>
-        <div class="py-12">
+        <div class="py-6">
             <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
+                        <div class="mb-4 border-b border-gray-200 pb-6">
+                            <div class="text-sm mb-4 text-gray-500">
+                                {{ loaded ? loaded.name : 'Importar dados dos alunos' }}
+                            </div>
+                            <div class="flex items-center gap-x-3">
+                                <DocumentIcon
+                                    :class="loaded ? 'text-green-400' : 'text-gray-300'"
+                                    class="size-8"
+                                    aria-hidden="true" />
+                                <input
+                                    id="students_scv"
+                                    @input="(e) => handleCSV(e)"
+                                    type="file"
+                                    accept=".csv"
+                                    class="hidden" />
+                                <button
+                                    v-if="loaded"
+                                    @click="sendCSV"
+                                    class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                    Enviar
+                                </button>
+                                <label
+                                    v-else
+                                    for="students_scv"
+                                    class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                    Selecionar Arquivo .csv
+                                </label>
+                            </div>
+                        </div>
                         <form @submit.prevent="submit">
                             <div class="border-b border-gray-900/10 pb-12">
                                 <h2 class="text-base/7 font-semibold text-gray-900">Informações do(a) Aluno(a)</h2>
                                 <p class="mt-1 text-sm/6 text-gray-600">Nome e data de nascimento são obrigatórios.</p>
-
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                     <div class="sm:col-span-4">
                                         <div class="mt-2 flex items-center gap-x-3">

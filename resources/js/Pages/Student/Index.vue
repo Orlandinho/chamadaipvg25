@@ -6,6 +6,7 @@
     import { format, differenceInYears } from 'date-fns';
     import Pagination from '@/Components/Pagination.vue';
     import DefaultAvatar from '@/Components/DefaultAvatar.vue';
+    import { ref } from 'vue';
 
     const props = defineProps({
         students: Object,
@@ -44,7 +45,7 @@
     <Head title="Alunos" />
 
     <AuthenticatedLayout>
-        <div class="py-12">
+        <div class="py-6">
             <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">

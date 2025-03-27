@@ -19,6 +19,7 @@ class RegisterController extends Controller
         if(auth()->user()->role_id === 3){
             $students = StudentResource::collection(Student::where('classroom_id', auth()->user()->classroom_id)
                 ->with('registers')
+                ->withCount('registers')
                 ->where('inactive', false)
                 ->orderBy('name')
                 ->get());
@@ -31,6 +32,7 @@ class RegisterController extends Controller
                     $query->where('classroom_id', $filter);
                 })
                 ->with('registers')
+                ->withCount('registers')
                 ->where('inactive', false)
                 ->where('classroom_id', ! null)
                 ->orderBy('name')

@@ -34,6 +34,6 @@
         v-else
         class="inline-flex items-center justify-center rounded-full border border-green-700 bg-white"
         :class="size">
-        <span class="font-medium text-green-700" :class="textSize">{{ getInitials }}</span>
+        <span class="font-medium tracking-wide text-green-700" :class="textSize">{{ getInitials }}</span>
     </span>
 </template>

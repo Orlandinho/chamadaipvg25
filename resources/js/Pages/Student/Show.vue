@@ -23,7 +23,7 @@
     <Head :title="student.name" />
 
     <AuthenticatedLayout>
-        <div class="py-12">
+        <div class="py-6">
             <div class="mx-auto max-w-5xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
@@ -53,19 +53,23 @@
                                     </div>
                                     <div class="bg-gray-50 px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
                                         <dt class="text-sm/6 font-medium text-gray-900">Classe</dt>
-                                        <dd
-                                            class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0"
-                                            :class="student.classroom ? 'text-gray-600' : 'text-red-400'">
+                                        <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
                                             {{ student.classroom ? student.classroom.name : 'Sem classe definida' }}
                                         </dd>
                                     </div>
                                     <div class="bg-white px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
+                                        <dt class="text-sm/6 font-medium text-gray-900">Contato</dt>
+                                        <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
+                                            {{ student.contact ? student.contact : 'Sem contato definido' }}
+                                        </dd>
+                                    </div>
+                                    <div class="bg-gray-50 px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
                                         <dt class="text-sm/6 font-medium text-gray-900">Aulas/Frequencia</dt>
                                         <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
                                             {{ student.classes + ' / ' + student.frequency }}
                                         </dd>
                                     </div>
-                                    <div class="bg-gray-50 px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
+                                    <div class="bg-white px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-3">
                                         <dt class="text-sm/6 font-medium text-gray-900">Taxa de frequencia</dt>
                                         <dd class="mt-1 text-sm/6 text-gray-600 sm:col-span-2 sm:mt-0">
                                             {{ student.frequency_ratio }}

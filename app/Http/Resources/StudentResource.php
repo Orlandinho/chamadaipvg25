@@ -21,13 +21,14 @@ class StudentResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'dob' => $this->dob,
+            'contact' => $this->contact,
             'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
             'inactive' => (boolean) $this->inactive,
             'classroom' => ClassroomResource::make($this->whenLoaded('classroom')),
             'registers' => RegisterResource::collection($this->whenLoaded('registers')),
-            'classes' => $this->registers->count(),
-            'frequency' => $this->registers->where('status', 1)->count(),
-            'frequency_ratio' => $this->when($request->routeIs('students.show'), $this->frequency_rate($this->registers->count(), $this->registers->where('status', 1)->count())),
+            'classes' => $this->registers()->count(),
+            'frequency' => $this->registers()->where('status', 1)->count(),
+            'frequency_ratio' => $this->when($request->routeIs('students.show'), $this->frequency_rate($this->registers()->count(), $this->registers()->where('status', 1)->count())),
         ];
     }
 

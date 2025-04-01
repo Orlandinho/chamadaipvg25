@@ -98,7 +98,7 @@
             <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <div class="mb-4 border-b border-gray-200 pb-6">
+                        <div v-if="$page.props.auth.user.role_id === 1" class="mb-4 border-b border-gray-200 pb-6">
                             <div class="text-sm mb-4 text-gray-500">
                                 {{ loaded ? loaded.name : 'Importar dados dos casais' }}
                             </div>

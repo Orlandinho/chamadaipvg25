@@ -21,6 +21,7 @@ class ClassroomResource extends JsonResource
             'description' => $this->description,
             'teachers' => UserResource::collection($this->whenLoaded('teachers')),
             'students_count' => $this->whenCounted('active_students'),
+            'visitants_count' => $this->whenCounted('visitants'),
             'frequency_ratio' => $this->when($request->routeIs(['classrooms.index','dashboard']), $this->frequency_rate($this->registers()->count(), $this->registers()->where('status', 1)->count())),
         ];
     }

@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\Couple;
 use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CSVImportController extends Controller
 {
+    public function __construct()
+    {
+        if (Auth::user()->role_id !== Roles::ADMIN->value) {
+            abort(403);
+        }
+    }
     public function importStudents(Request $request)
     {
         $request->validate([
@@ -82,7 +90,7 @@ class CSVImportController extends Controller
         }
     }
 
-    public function makeSlugForStudent(string $name): string
+    protected function makeSlugForStudent(string $name): string
     {
         $slug = Str::slug($name);
 
@@ -91,7 +99,7 @@ class CSVImportController extends Controller
         return $count ? "{$slug}-{$count}" : $slug;
     }
 
-    public function makeSlugForCouple(string $husband, string $wife): string
+    protected function makeSlugForCouple(string $husband, string $wife): string
     {
 
         $husband = explode(' ', $husband);

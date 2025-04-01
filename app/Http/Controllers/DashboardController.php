@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClassroomResource;
 use App\Http\Resources\CoupleResource;
 use App\Http\Resources\StudentResource;
+use App\Models\Classroom;
 use App\Models\Couple;
 use App\Models\Register;
 use App\Models\Student;
 use App\Models\Visitant;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Response;
 
 class DashboardController extends Controller
@@ -72,6 +72,7 @@ class DashboardController extends Controller
                 'total_visits' => Visitant::all()->count(),
                 'total_unique_visits' => Visitant::select('name')->distinct('name')->count(),
                 'absent_students' => StudentResource::collection(Student::with('classroom')->find($absentStudents)),
+                'classrooms_stats' => ClassroomResource::collection(Classroom::withCount(['active_students','visitants'])->get()),
             ]
         ]);
     }

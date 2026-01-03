@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Couple;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
@@ -15,13 +16,24 @@ class StoreCoupleRequest extends FormRequest
         return true;
     }
 
+    protected function makeSlugFromCouple(string $husband, string $wife): string
+    {
+        $originalSlug = Str::slug(explode(' ', $husband)[0] . ' e ' . explode(' ', $wife)[0], '_');
+        $slug = $originalSlug;
+        $count = 1;
+
+        while (Couple::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$count}";
+            $count++;
+        }
+
+        return $slug;
+    }
+
     protected function prepareForValidation(): void
     {
-        $husband = explode(' ', $this->husband);
-        $wife = explode(' ', $this->wife);
-
         $this->merge([
-            'slug' => Str::slug($husband[0] . ' e ' . $wife[0], '_'),
+            'slug' => $this->makeSlugFromCouple($this->husband, $this->wife),
         ]);
     }
 

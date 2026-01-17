@@ -34,7 +34,7 @@ class RegisterController extends Controller
                 ->with('registers')
                 ->withCount('registers')
                 ->where('inactive', false)
-                ->where('classroom_id', ! null)
+                ->whereNotNull('classroom_id')
                 ->orderBy('name')
                 ->get());
             $visitants = VisitantResource::collection(Visitant::query()

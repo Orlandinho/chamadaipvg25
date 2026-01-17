@@ -6,7 +6,6 @@
     import { format, differenceInYears } from 'date-fns';
     import Pagination from '@/Components/Pagination.vue';
     import DefaultAvatar from '@/Components/DefaultAvatar.vue';
-    import { ref } from 'vue';
 
     const props = defineProps({
         students: Object,

@@ -45,10 +45,10 @@ class CoupleController extends Controller
         $data = $request->validated();
         try {
             if($request->hasFile('husband_avatar')) {
-                $data['husband_avatar'] = Storage::disk('public')->put('avatars', $request->file('husband_avatar'));
+                $data['husband_avatar'] = Storage::disk('avatar')->put('avatars', $request->file('husband_avatar'));
             }
             if($request->hasFile('wife_avatar')) {
-                $data['wife_avatar'] = Storage::disk('public')->put('avatars', $request->file('wife_avatar'));
+                $data['wife_avatar'] = Storage::disk('avatar')->put('avatars', $request->file('wife_avatar'));
             }
             Couple::create($data);
         } catch (\Exception $e) {
@@ -77,17 +77,17 @@ class CoupleController extends Controller
         try {
             if ($request->hasFile('husband_avatar')) {
                 if($couple->husband_avatar){
-                    Storage::disk('public')->delete($couple->husband_avatar);
+                    Storage::disk('avatar')->delete($couple->husband_avatar);
                 }
-                $data['husband_avatar'] = Storage::disk('public')->put('avatars', $request->husband_avatar);
+                $data['husband_avatar'] = Storage::disk('avatar')->put('avatars', $request->husband_avatar);
             } else {
                 $data['husband_avatar'] = $couple->husband_avatar;
             }
             if ($request->hasFile('husband_avatar')) {
                 if($couple->wife_avatar){
-                    Storage::disk('public')->delete($couple->wife_avatar);
+                    Storage::disk('avatar')->delete($couple->wife_avatar);
                 }
-                $data['wife_avatar'] = Storage::disk('public')->put('avatars', $request->wife_avatar);
+                $data['wife_avatar'] = Storage::disk('avatar')->put('avatars', $request->wife_avatar);
             } else {
                 $data['wife_avatar'] = $couple->wife_avatar;
             }
@@ -106,10 +106,10 @@ class CoupleController extends Controller
     {
         try {
             if($couple->husband_avatar) {
-                Storage::disk('public')->delete($couple->husband_avatar);
+                Storage::disk('avatar')->delete($couple->husband_avatar);
             }
             if($couple->wife_avatar) {
-                Storage::disk('public')->delete($couple->wife_avatar);
+                Storage::disk('avatar')->delete($couple->wife_avatar);
             }
             $couple->delete();
         } catch (\Exception $e) {

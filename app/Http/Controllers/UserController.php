@@ -51,7 +51,7 @@ class UserController extends Controller
         $data = $request->validated();
         try {
             if($request->hasFile('avatar')) {
-                $data['avatar'] = Storage::disk('public')->put('avatars', $request->file('avatar'));
+                $data['avatar'] = Storage::disk('avatar')->put('avatars', $request->file('avatar'));
             }
             User::create($data);
         } catch (\Exception $e) {
@@ -92,9 +92,9 @@ class UserController extends Controller
         try {
             if ($request->hasFile('avatar')) {
                 if($user->avatar){
-                    Storage::disk('public')->delete($user->avatar);
+                    Storage::disk('avatar')->delete($user->avatar);
                 }
-                $data['avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
+                $data['avatar'] = Storage::disk('avatar')->put('avatars', $request->avatar);
             } else {
                 $data['avatar'] = $user->avatar;
             }
@@ -113,7 +113,7 @@ class UserController extends Controller
     {
         try {
             if($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
+                Storage::disk('avatar')->delete($user->avatar);
             }
             $user->delete();
         } catch (\Exception $e) {

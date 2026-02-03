@@ -40,11 +40,19 @@ class DashboardController extends Controller
         $nextSunday = now()->isSunday() ? now() : Carbon::parse('next sunday');
         $previousMonday = now()->isMonday() ? now() : Carbon::parse('previous monday');
 
-        $absentStudents = Register::select('student_id')
+        /*$absentStudents = Register::select('student_id')
             ->where('sunday', '>=', now()->subWeeks(4)->toDateString())
             ->groupBy('student_id')
             ->havingRaw('SUM(status) = 0')
             ->havingRaw('COUNT(*) > 3')
+            ->pluck('student_id');*/
+
+        $absentStudents = Register::select('student_id')
+            ->where('sunday', '>=', now()->subWeeks(4)->startOfDay())
+            ->whereNotNull('status') // Garante que estamos olhando para dias que tiveram aula
+            ->groupBy('student_id')
+            ->havingRaw('MAX(status) = 0') // Se o maior valor for 0, ele nunca esteve presente (1)
+            ->havingRaw('COUNT(DISTINCT sunday) >= 4') // Garante que ele faltou em 4 domingos diferentes
             ->pluck('student_id');
 
         return inertia('Dashboard', [

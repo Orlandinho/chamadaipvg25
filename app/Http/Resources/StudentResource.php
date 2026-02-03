@@ -6,6 +6,7 @@ use App\Models\Classroom;
 use App\Models\Register;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class StudentResource extends JsonResource
 {
@@ -23,7 +24,7 @@ class StudentResource extends JsonResource
             'slug' => $this->slug,
             'dob' => $this->dob,
             'contact' => $this->contact,
-            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
+            'avatar' => Storage::disk('avatar')->get($this->avatar) ?? null,
             'inactive' => (boolean) $this->inactive,
             'classroom' => ClassroomResource::make($this->whenLoaded('classroom')),
             'registers' => RegisterResource::collection($this->whenLoaded('registers')),

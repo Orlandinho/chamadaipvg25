@@ -104,7 +104,13 @@
                                                                     {{ 'Editar ' + user.name }}
                                                                 </span>
                                                             </Link>
-                                                            <button>
+                                                            <button
+                                                                :class="
+                                                                    users.filter((user) => user.role_id === 1).length <
+                                                                        2 && user.role_id === 1
+                                                                        ? 'hidden'
+                                                                        : ''
+                                                                ">
                                                                 <TrashIcon
                                                                     class="text-red-600 hover:text-red-400 w-5 h-5"
                                                                     @click="deleteUser(user)" />

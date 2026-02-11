@@ -20,7 +20,7 @@
         email: '',
         role_id: '',
         classroom_id: '',
-        avatar: '',
+        avatar: null,
     });
 
     const preview = ref('');
@@ -73,7 +73,7 @@
                                 </p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="sm:col-span-4">
+                                    <div class="hidden sm:col-span-4">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!preview"

@@ -77,9 +77,9 @@
         router.post(route('couples.update', props.couple), {
             _method: 'patch',
             husband: form.husband,
-            husband_avatar: form.husband_avatar,
+            husband_avatar: null,
             wife: form.wife,
-            wife_avatar: form.wife_avatar,
+            wife_avatar: null,
             marriage_date: form.marriage_date,
         });
     };
@@ -101,7 +101,7 @@
                                 <p class="mt-1 text-sm/6 text-gray-600">Atualização de dados.</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="sm:col-span-3">
+                                    <div class="hidden sm:col-span-3">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!form.husband_avatar"
@@ -130,7 +130,7 @@
                                         <InputError class="mt-2" :message="form.errors.husband_avatar" />
                                     </div>
 
-                                    <div class="sm:col-span-3">
+                                    <div class="hidden sm:col-span-3">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!preview_wife"

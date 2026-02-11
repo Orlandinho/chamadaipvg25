@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'email' => $this->email,
-            'avatar' => Storage::disk('avatar')->get($this->avatar) ?? null,
+            'avatar' => $this->avatar ? Storage::disk('s3')->url($this->avatar) : null,
             'role' => Roles::tryFrom($this->role_id)->role(),
             'role_id' => $this->when($request->routeIs('users.edit'), $this->role_id),
             'classroom' => new ClassroomResource($this->whenLoaded('classroom')),

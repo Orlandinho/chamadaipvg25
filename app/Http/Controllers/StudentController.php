@@ -55,7 +55,7 @@ class StudentController extends Controller
         try {
             $data = $request->validated();
             if($request->hasFile('avatar')){
-                $data['avatar'] = Storage::disk('avatar')->put('avatars', $request->avatar);
+                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
             }
             Student::create($data);
         } catch (\Exception $e) {
@@ -114,9 +114,9 @@ class StudentController extends Controller
         try {
             if ($request->hasFile('avatar')) {
                 if($student->avatar){
-                    Storage::disk('avatar')->delete($student->avatar);
+                    Storage::disk('s3')->delete($student->avatar);
                 }
-                $data['avatar'] = Storage::disk('avatar')->put('avatars', $request->avatar);
+                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
             } else {
                 $data['avatar'] = $student->avatar;
             }
@@ -141,7 +141,7 @@ class StudentController extends Controller
 
         try {
             if($student->avatar) {
-                Storage::disk('avatar')->delete($student->avatar);
+                Storage::disk('s3')->delete($student->avatar);
             }
             $student->delete();
         } catch (\Exception $e) {

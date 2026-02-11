@@ -11,9 +11,9 @@
 
     const form = useForm({
         husband: '',
-        husband_avatar: '',
+        husband_avatar: null,
         wife: '',
-        wife_avatar: '',
+        wife_avatar: null,
         marriage_date: '',
     });
 
@@ -130,10 +130,10 @@
                         <form @submit.prevent="submit">
                             <div class="border-b border-gray-900/10 pb-12">
                                 <h2 class="text-base/7 font-semibold text-gray-900">Informações do Casal</h2>
-                                <p class="mt-1 text-sm/6 text-gray-600">Nomes e data de casamento são obrigatórios</p>
+                                <p class="mt-1 text-sm/6 text-gray-600">Nomes e data de casamento são obrigatórios!</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="sm:col-span-3">
+                                    <div class="hidden sm:col-span-3">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!preview_husband"
@@ -162,7 +162,7 @@
                                         <InputError class="mt-2" :message="form.errors.husband_avatar" />
                                     </div>
 
-                                    <div class="sm:col-span-3">
+                                    <div class="hidden sm:col-span-3">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!preview_wife"

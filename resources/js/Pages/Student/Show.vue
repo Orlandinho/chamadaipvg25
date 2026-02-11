@@ -30,7 +30,7 @@
                         <div>
                             <div class="px-4 sm:px-0">
                                 <div class="flex items-center space-x-4">
-                                    <DefaultAvatar :person="student" size="size-20" text-size="text-4xl" />
+                                    <DefaultAvatar :person="student" size="size-12" text-size="text-2xl" />
                                     <span class="text-base/7 font-semibold text-gray-900">
                                         {{ student.name }}
                                     </span>

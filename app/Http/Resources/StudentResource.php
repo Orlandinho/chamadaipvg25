@@ -24,7 +24,7 @@ class StudentResource extends JsonResource
             'slug' => $this->slug,
             'dob' => $this->dob,
             'contact' => $this->contact,
-            'avatar' => Storage::disk('avatar')->get($this->avatar) ?? null,
+            'avatar' => $this->avatar ? Storage::disk('s3')->url($this->avatar) : '',
             'inactive' => (boolean) $this->inactive,
             'classroom' => ClassroomResource::make($this->whenLoaded('classroom')),
             'registers' => RegisterResource::collection($this->whenLoaded('registers')),

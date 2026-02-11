@@ -11,6 +11,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 
@@ -51,7 +52,7 @@ class UserController extends Controller
         $data = $request->validated();
         try {
             if($request->hasFile('avatar')) {
-                $data['avatar'] = Storage::disk('avatar')->put('avatars', $request->file('avatar'));
+                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
             }
             User::create($data);
         } catch (\Exception $e) {
@@ -91,12 +92,14 @@ class UserController extends Controller
         $data = $request->validated();
         try {
             if ($request->hasFile('avatar')) {
-                if($user->avatar){
-                    Storage::disk('avatar')->delete($user->avatar);
+                if ($user->avatar) {
+                    Storage::disk('s3')->delete($user->avatar);
                 }
-                $data['avatar'] = Storage::disk('avatar')->put('avatars', $request->avatar);
+
+                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
+                dd($data);
             } else {
-                $data['avatar'] = $user->avatar;
+                unset($data['avatar']);
             }
             $user->update($data);
         } catch (\Exception $e) {
@@ -113,7 +116,7 @@ class UserController extends Controller
     {
         try {
             if($user->avatar) {
-                Storage::disk('avatar')->delete($user->avatar);
+                Storage::disk('s3')->delete($user->avatar);
             }
             $user->delete();
         } catch (\Exception $e) {

@@ -21,7 +21,7 @@
     const form = useForm({
         name: props.student.name,
         dob: format(new Date(props.student.dob), 'yyyy-MM-dd'),
-        avatar: '',
+        avatar: null,
         contact: props.student.contact,
         classroom_id: props.student.classroom?.id ?? '',
         inactive: props.student.inactive,
@@ -59,7 +59,7 @@
             _method: 'patch',
             name: form.name,
             dob: form.dob,
-            avatar: form.avatar,
+            avatar: null,
             classroom_id: form.classroom_id ?? '',
             inactive: form.inactive,
         });
@@ -82,7 +82,7 @@
                                 <p class="mt-1 text-sm/6 text-gray-600">Atualização de dados.</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="sm:col-span-4">
+                                    <div class="hidden sm:col-span-4">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!student.avatar"

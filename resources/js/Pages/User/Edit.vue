@@ -56,7 +56,7 @@
             _method: 'patch',
             name: form.name,
             email: form.email,
-            avatar: form.avatar,
+            avatar: null,
             role_id: form.role_id,
             classroom_id: form.classroom?.id ?? '',
         });
@@ -77,7 +77,7 @@
                                 <p class="mt-1 text-sm/6 text-gray-600">Atualização de dados</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="sm:col-span-4">
+                                    <div class="hidden sm:col-span-4">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!form.avatar"

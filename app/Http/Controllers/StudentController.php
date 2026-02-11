@@ -140,9 +140,9 @@ class StudentController extends Controller
         }
 
         try {
-            if($student->avatar) {
+            /*if($student->avatar) {
                 Storage::disk('s3')->delete($student->avatar);
-            }
+            }*/
             $student->delete();
         } catch (\Exception $e) {
             return back()->alertFailure("Falha ao excluir as informações do(a) aluno(a) {$student->name}.");

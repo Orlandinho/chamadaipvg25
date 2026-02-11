@@ -115,9 +115,9 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         try {
-            if($user->avatar) {
+            /*if($user->avatar) {
                 Storage::disk('s3')->delete($user->avatar);
-            }
+            }*/
             $user->delete();
         } catch (\Exception $e) {
             return back()->alertFailure("Não foi possível excluir os dados do colaborador(a) {$user->name}. Se o problema persistir entre em contato com o suporte.");

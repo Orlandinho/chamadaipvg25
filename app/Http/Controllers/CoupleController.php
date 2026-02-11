@@ -105,12 +105,12 @@ class CoupleController extends Controller
     public function destroy(Couple $couple)
     {
         try {
-            if($couple->husband_avatar) {
+            /*if($couple->husband_avatar) {
                 Storage::disk('avatar')->delete($couple->husband_avatar);
             }
             if($couple->wife_avatar) {
                 Storage::disk('avatar')->delete($couple->wife_avatar);
-            }
+            }*/
             $couple->delete();
         } catch (\Exception $e) {
             return back()->alertFailure('Não foi possível apagar os dados  do casal');

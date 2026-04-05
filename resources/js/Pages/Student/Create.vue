@@ -9,7 +9,7 @@
     import { DocumentIcon, UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
     import { vMaska } from 'maska/vue';
     import { ref } from 'vue';
-    import imageCompression from 'browser-image-compression';
+    import { useImageUpload } from '@/Composables/useImageUpload.js';
 
     defineProps({
         classrooms: Object,
@@ -18,54 +18,31 @@
     const form = useForm({
         name: '',
         dob: '',
-        avatar: null,
+        avatar: '',
         contact: '',
         classroom_id: '',
     });
 
-    const preview = ref('');
-
-    const loaded = ref(null);
+    const csvFile = ref(null);
 
     const handleCSV = (e) => {
-        loaded.value = e.target.files[0];
+        csvFile.value = e.target.files[0];
     };
 
     const sendCSV = () => {
         router.post(
             route('import.students'),
-            { students_csv: loaded.value },
+            { students_csv: csvFile.value },
             {
                 forceFormData: true,
                 onSuccess: (data) => {
-                    loaded.value = 'Dados inseridos';
+                    csvFile.value = 'Dados inseridos';
                 },
             },
         );
     };
 
-    const handleImage = async (e) => {
-        const file = e.target.files[0];
-        const compressedFile = ref(null);
-
-        const options = {
-            maxSizeMB: 0.25, // (Max size in MB)
-            maxWidthOrHeight: 400, // Resize width/height
-            useWebWorker: true, // Improves performance
-        };
-
-        try {
-            const compressedBlob = await imageCompression(file, options);
-            compressedFile.value = new File([compressedBlob], file.name, {
-                type: compressedBlob.type,
-            });
-
-            preview.value = URL.createObjectURL(compressedFile.value);
-            form.avatar = compressedFile.value;
-        } catch (error) {
-            form.setError('avatar', 'Houve um problema ao carregar o arquivo');
-        }
-    };
+    const { handleImage, preview } = useImageUpload(form, 'avatar');
 
     const submit = () => {
         form.post(route('students.store'));
@@ -82,11 +59,11 @@
                     <div class="p-6 text-gray-900">
                         <div v-if="$page.props.auth.user.role_id === 1" class="mb-4 border-b border-gray-200 pb-6">
                             <div class="text-sm mb-4 text-gray-500">
-                                {{ loaded ? loaded.name : 'Importar dados dos alunos' }}
+                                {{ csvFile ? csvFile.name : 'Importar dados dos alunos' }}
                             </div>
                             <div class="flex items-center gap-x-3">
                                 <DocumentIcon
-                                    :class="loaded ? 'text-green-400' : 'text-gray-300'"
+                                    :class="csvFile ? 'text-green-400' : 'text-gray-300'"
                                     class="size-8"
                                     aria-hidden="true" />
                                 <input
@@ -96,7 +73,7 @@
                                     accept=".csv"
                                     class="hidden" />
                                 <button
-                                    v-if="loaded"
+                                    v-if="csvFile"
                                     @click="sendCSV"
                                     class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                                     Enviar
@@ -114,7 +91,7 @@
                                 <h2 class="text-base/7 font-semibold text-gray-900">Informações do(a) Aluno(a)</h2>
                                 <p class="mt-1 text-sm/6 text-gray-600">Nome e data de nascimento são obrigatórios.</p>
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="hidden sm:col-span-4">
+                                    <div class="sm:col-span-4">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!preview"

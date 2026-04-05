@@ -24,6 +24,8 @@ class StudentFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name , '-'),
             'dob' => fake()->dateTimeBetween('-60 years', '-2 years')->format('Y-m-d'),
+            'contact' => fake()->phoneNumber(),
+            'inactive' => false,
         ];
     }
 }

@@ -9,7 +9,18 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitantController;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/test', function ()  {
+
+    $user = \App\Models\User::find(14);
+
+    $project = config('app.slug');
+    $path = $project . '/avatars/' . $user->avatar;
+
+    return Storage::disk('s3')->url($user->avatar);
+});
 
 Route::middleware(['auth'])->group(function () {
 

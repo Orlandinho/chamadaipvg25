@@ -11,7 +11,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 
@@ -50,12 +50,20 @@ class UserController extends Controller
     public function store(StoreUserRequest $request): RedirectResponse
     {
         $data = $request->validated();
+
         try {
-            if($request->hasFile('avatar')) {
-                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
+            if ($file = $request->file('avatar')) {
+
+                $path = $file->store(image_path(), 's3');
+
+                if (! $path) {
+                    throw new \RuntimeException('Upload failed');
+                }
+
+                $data['avatar'] = $path;
+                User::create($data);
             }
-            User::create($data);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte.');
         }
 
@@ -89,24 +97,45 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $data = $request->validated();
+        $data = $request->safe()->except('avatar');
+        $oldPath = $user->avatar;
+        $newPath = null;
+
+        DB::beginTransaction();
+
         try {
             if ($request->hasFile('avatar')) {
-                if ($user->avatar) {
-                    Storage::disk('s3')->delete($user->avatar);
+
+                $newPath = $request->file('avatar')->store(image_path(), 's3');
+
+                if (! $newPath) {
+                    throw new \RuntimeException('Upload failed');
                 }
 
-                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
-                dd($data);
-            } else {
-                unset($data['avatar']);
+                $data['avatar'] = $newPath;
             }
+
             $user->update($data);
-        } catch (\Exception $e) {
-            return back()->alertFailure('Não foi possível realizar a atualização dos dados. Se o problema persistir entre em contato com o suporte.');
+
+            DB::commit();
+
+            if ($newPath && $oldPath) {
+                Storage::disk('s3')->delete($oldPath);
+            }
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($newPath) {
+                Storage::disk('s3')->delete($newPath);
+            }
+
+            report($e);
+
+            return back()->alertFailure('Erro ao atualizar usuário.');
         }
 
-        return to_route('users.index')->alertSuccess('Atualização realizada com sucesso!');
+        return to_route('users.index')->alertSuccess('Usuário atualizado com sucesso!');
     }
 
     /**
@@ -115,14 +144,14 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         try {
-            /*if($user->avatar) {
+            if($user->avatar) {
                 Storage::disk('s3')->delete($user->avatar);
-            }*/
+            }
             $user->delete();
         } catch (\Exception $e) {
             return back()->alertFailure("Não foi possível excluir os dados do colaborador(a) {$user->name}. Se o problema persistir entre em contato com o suporte.");
         }
 
-        return to_route('users.index')->alertSuccess('Dados excluídos com sucesso!');
+        return back()->alertSuccess('Dados excluídos com sucesso!');
     }
 }

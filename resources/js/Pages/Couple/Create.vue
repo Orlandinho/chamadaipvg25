@@ -7,7 +7,7 @@
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import { DocumentIcon, UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
     import { ref } from 'vue';
-    import imageCompression from 'browser-image-compression';
+    import { useImageUpload } from '@/Composables/useImageUpload.js';
 
     const form = useForm({
         husband: '',
@@ -17,8 +17,8 @@
         marriage_date: '',
     });
 
-    const preview_husband = ref('');
-    const preview_wife = ref('');
+    const { handleImage: handleHusbandImage, preview: preview_husband } = useImageUpload(form, 'husband_avatar');
+    const { handleImage: handleWifeImage, preview: preview_wife } = useImageUpload(form, 'wife_avatar');
 
     const loaded = ref(null);
 
@@ -37,52 +37,6 @@
                 },
             },
         );
-    };
-
-    const handleHusbandImage = async (e) => {
-        const file = e.target.files[0];
-        const compressedFile = ref(null);
-
-        const options = {
-            maxSizeMB: 0.25, // (Max size in MB)
-            maxWidthOrHeight: 400, // Resize width/height
-            useWebWorker: true, // Improves performance
-        };
-
-        try {
-            const compressedBlob = await imageCompression(file, options);
-            compressedFile.value = new File([compressedBlob], file.name, {
-                type: compressedBlob.type,
-            });
-
-            preview_husband.value = URL.createObjectURL(compressedFile.value);
-            form.husband_avatar = compressedFile.value;
-        } catch (error) {
-            form.setError('husband_avatar', 'Houve um problema ao carregar a imagem');
-        }
-    };
-
-    const handleWifeImage = async (e) => {
-        const file = e.target.files[0];
-        const compressedFile = ref(null);
-
-        const options = {
-            maxSizeMB: 0.25, // (Max size in MB)
-            maxWidthOrHeight: 400, // Resize width/height
-            useWebWorker: true, // Improves performance
-        };
-
-        try {
-            const compressedBlob = await imageCompression(file, options);
-            compressedFile.value = new File([compressedBlob], file.name, {
-                type: compressedBlob.type,
-            });
-
-            preview_wife.value = URL.createObjectURL(compressedFile.value);
-            form.wife_avatar = compressedFile.value;
-        } catch (error) {
-            form.setError('wife_avatar', 'Houve um problema ao carregar a imagem');
-        }
     };
 
     const submit = () => {
@@ -132,29 +86,36 @@
                                 <h2 class="text-base/7 font-semibold text-gray-900">Informações do Casal</h2>
                                 <p class="mt-1 text-sm/6 text-gray-600">Nomes e data de casamento são obrigatórios!</p>
 
-                                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="hidden sm:col-span-3">
+                                <div class="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                    <div class="sm:col-span-3">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
-                                                v-if="!preview_husband"
+                                                v-if="!form.husband_avatar"
                                                 class="size-14 text-gray-300"
                                                 aria-hidden="true" />
                                             <img
-                                                v-else
+                                                v-else-if="preview_husband"
                                                 class="inline-block size-14 rounded-full"
                                                 :src="preview_husband"
                                                 alt="Avatar" />
+                                            <img
+                                                v-else
+                                                class="inline-block size-14 rounded-full"
+                                                :src="form.husband_avatar"
+                                                alt="Avatar" />
                                             <input
-                                                id="husband_avatar"
+                                                id="avatar"
                                                 @input="(e) => handleHusbandImage(e)"
-                                                accept=".png, .jpeg, .jpg"
                                                 type="file"
+                                                accept=".png, .jpeg, .jpg"
                                                 class="hidden" />
-                                            <label
-                                                for="husband_avatar"
-                                                class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                                Foto do Esposo
-                                            </label>
+                                            <div class="flex items-center gap-x-3">
+                                                <label
+                                                    for="avatar"
+                                                    class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                    Selecionar Foto
+                                                </label>
+                                            </div>
                                         </div>
                                         <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                                             {{ form.progress.percentage }}%
@@ -162,28 +123,35 @@
                                         <InputError class="mt-2" :message="form.errors.husband_avatar" />
                                     </div>
 
-                                    <div class="hidden sm:col-span-3">
+                                    <div class="sm:col-span-3">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
-                                                v-if="!preview_wife"
+                                                v-if="!form.wife_avatar"
                                                 class="size-14 text-gray-300"
                                                 aria-hidden="true" />
                                             <img
-                                                v-else
+                                                v-else-if="preview_wife"
                                                 class="inline-block size-14 rounded-full"
                                                 :src="preview_wife"
                                                 alt="Avatar" />
+                                            <img
+                                                v-else
+                                                class="inline-block size-14 rounded-full"
+                                                :src="form.wife_avatar"
+                                                alt="Avatar" />
                                             <input
-                                                id="wife_avatar"
+                                                id="avatar"
                                                 @input="(e) => handleWifeImage(e)"
-                                                accept=".png, .jpeg, .jpg"
                                                 type="file"
+                                                accept=".png, .jpeg, .jpg"
                                                 class="hidden" />
-                                            <label
-                                                for="wife_avatar"
-                                                class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                                Foto da Esposa
-                                            </label>
+                                            <div class="flex items-center gap-x-3">
+                                                <label
+                                                    for="avatar"
+                                                    class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                    Selecionar Foto
+                                                </label>
+                                            </div>
                                         </div>
                                         <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                                             {{ form.progress.percentage }}%

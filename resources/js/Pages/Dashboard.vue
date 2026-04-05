@@ -30,7 +30,7 @@
                     </div>
                     <div class="p-6 text-gray-900 grid grid-cols-1 sm:grid-cols-6">
                         <ClassroomCard
-                            class="col-span-1 sm:col-span-2 mt-4 sm:mt-0 mr-0 sm:mr-4"
+                            class="col-span-1 sm:col-span-2 mr-0 mb-4 sm:mr-4"
                             v-for="classroom in stats.classrooms_stats"
                             :key="classroom.id"
                             :classroom />

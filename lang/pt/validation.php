@@ -18,7 +18,9 @@ return [
             'required' => 'O nome é necessário',
             'string' => 'Apenas texto válido no campo do nome',
             'max' => 'O nome é muito grande',
-            'unique' => 'Esse nome já foi atribuído a outra classe'
+        ],
+        'slug' => [
+            'unique' => 'Esse nome já está em uso'
         ],
         'email' => [
             'required' => 'O e-mail é necessário',

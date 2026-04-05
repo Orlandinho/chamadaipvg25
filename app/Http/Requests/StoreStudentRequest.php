@@ -25,11 +25,16 @@ class StoreStudentRequest extends FormRequest
 
     public function makeSlugFromName($name): string
     {
-        $slug = Str::slug($name);
+        $originalSlug = Str::slug($name);
+        $slug = $originalSlug;
+        $count = 1;
 
-        $count = Student::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+        while (Student::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$count}";
+            $count++;
+        }
 
-        return $count ? "{$slug}-{$count}" : $slug;
+        return $slug;
     }
 
     /**

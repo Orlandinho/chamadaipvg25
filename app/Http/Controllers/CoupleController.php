@@ -7,6 +7,7 @@ use App\Models\Couple;
 use App\Http\Requests\StoreCoupleRequest;
 use App\Http\Requests\UpdateCoupleRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 
@@ -44,15 +45,31 @@ class CoupleController extends Controller
     {
         $data = $request->validated();
         try {
-            if($request->hasFile('husband_avatar')) {
-                $data['husband_avatar'] = Storage::disk('avatar')->put('avatars', $request->file('husband_avatar'));
+            if ($file = $request->file('husband_avatar')) {
+
+                $path = $file->store(image_path(), 's3');
+
+                if (! $path) {
+                    throw new \RuntimeException('Upload failed');
+                }
+
+                $data['husband_avatar'] = $path;
             }
-            if($request->hasFile('wife_avatar')) {
-                $data['wife_avatar'] = Storage::disk('avatar')->put('avatars', $request->file('wife_avatar'));
+
+            if ($file = $request->file('wife_avatar')) {
+
+                $path = $file->store(image_path(), 's3');
+
+                if (! $path) {
+                    throw new \RuntimeException('Upload failed');
+                }
+
+                $data['wife_avatar'] = $path;
             }
+
             Couple::create($data);
-        } catch (\Exception $e) {
-            return back()->alertFailure('Não foi possível salvar as informações. Se o problema persistir entre em contato com o suporte.');
+        } catch (\Throwable $e) {
+            return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte.');
         }
 
         return to_route('couples.index')->alertSuccess('Casal registrado com sucesso!');
@@ -73,27 +90,63 @@ class CoupleController extends Controller
      */
     public function update(UpdateCoupleRequest $request, Couple $couple)
     {
-        $data = $request->validated();
+        $data = $request->safe()->except('husband_avatar', 'wife_avatar');
+        $oldHusbandPath = $couple->husband_avatar;
+        $oldWifePath = $couple->wife_avatar;
+        $newHusbandPath = null;
+        $newWifePath = null;
+
+        DB::beginTransaction();
+
         try {
             if ($request->hasFile('husband_avatar')) {
-                if($couple->husband_avatar){
-                    Storage::disk('avatar')->delete($couple->husband_avatar);
+
+                $newHusbandPath = $request->file('husband_avatar')->store(image_path(), 's3');
+
+                if (! $newHusbandPath) {
+                    throw new \RuntimeException('Upload failed');
                 }
-                $data['husband_avatar'] = Storage::disk('avatar')->put('avatars', $request->husband_avatar);
-            } else {
-                $data['husband_avatar'] = $couple->husband_avatar;
+
+                $data['husband_avatar'] = $newHusbandPath;
             }
-            if ($request->hasFile('husband_avatar')) {
-                if($couple->wife_avatar){
-                    Storage::disk('avatar')->delete($couple->wife_avatar);
+
+            if ($request->hasFile('wife_avatar')) {
+
+                $newWifePath = $request->file('wife_avatar')->store(image_path(), 's3');
+
+                if (! $newWifePath) {
+                    throw new \RuntimeException('Upload failed');
                 }
-                $data['wife_avatar'] = Storage::disk('avatar')->put('avatars', $request->wife_avatar);
-            } else {
-                $data['wife_avatar'] = $couple->wife_avatar;
+
+                $data['wife_avatar'] = $newWifePath;
             }
+
             $couple->update($data);
-        } catch (\Exception $e) {
-            return back()->AlertFailure('Não foi possível atualizar as informações do casal');
+
+            DB::commit();
+
+            if ($newHusbandPath && $oldHusbandPath) {
+                Storage::disk('s3')->delete($oldHusbandPath);
+            }
+
+            if ($newWifePath && $oldWifePath) {
+                Storage::disk('s3')->delete($oldWifePath);
+            }
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($newHusbandPath) {
+                Storage::disk('s3')->delete($newHusbandPath);
+            }
+
+            if ($newWifePath) {
+                Storage::disk('s3')->delete($newWifePath);
+            }
+
+            report($e);
+
+            return back()->alertFailure('Erro ao atualizar dados do casal.');
         }
 
         return to_route('couples.index')->alertSuccess('Informações do casal atualizadas!');
@@ -105,12 +158,12 @@ class CoupleController extends Controller
     public function destroy(Couple $couple)
     {
         try {
-            /*if($couple->husband_avatar) {
-                Storage::disk('avatar')->delete($couple->husband_avatar);
+            if($couple->husband_avatar) {
+                Storage::disk('s3')->delete($couple->husband_avatar);
             }
             if($couple->wife_avatar) {
-                Storage::disk('avatar')->delete($couple->wife_avatar);
-            }*/
+                Storage::disk('s3')->delete($couple->wife_avatar);
+            }
             $couple->delete();
         } catch (\Exception $e) {
             return back()->alertFailure('Não foi possível apagar os dados  do casal');

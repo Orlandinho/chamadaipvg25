@@ -10,6 +10,7 @@ use App\Models\Student;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Response;
 
@@ -52,14 +53,22 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request): RedirectResponse
     {
+        $data = $request->validated();
+
         try {
-            $data = $request->validated();
-            if($request->hasFile('avatar')){
-                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
+            if ($file = $request->file('avatar')) {
+
+                $path = $file->store(image_path(), 's3');
+
+                if (! $path) {
+                    throw new \RuntimeException('Upload failed');
+                }
+
+                $data['avatar'] = $path;
+                Student::create($data);
             }
-            Student::create($data);
-        } catch (\Exception $e) {
-            return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte');
+        } catch (\Throwable $e) {
+            return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte.');
         }
 
         return to_route('students.index')->alertSuccess('Cadastro realizado com sucesso!');
@@ -109,23 +118,47 @@ class StudentController extends Controller
             }
         }
 
-        $data = $request->validated();
+
+
+        $data = $request->safe()->except('avatar');
+        $oldPath = $student->avatar;
+        $newPath = null;
+
+        DB::beginTransaction();
 
         try {
             if ($request->hasFile('avatar')) {
-                if($student->avatar){
-                    Storage::disk('s3')->delete($student->avatar);
+
+                $newPath = $request->file('avatar')->store(image_path(), 's3');
+
+                if (! $newPath) {
+                    throw new \RuntimeException('Upload failed');
                 }
-                $data['avatar'] = $request->file('avatar')->store('avatars', 's3');
-            } else {
-                $data['avatar'] = $student->avatar;
+
+                $data['avatar'] = $newPath;
             }
+
             $student->update($data);
-        } catch (\Exception $e) {
-            return back()->alertFailure("Não foi possível atualizar as informações do(a) aluno(a) {$student->name}. Se o problema persistir entre em contato com o suporte.");
+
+            DB::commit();
+
+            if ($newPath && $oldPath) {
+                Storage::disk('s3')->delete($oldPath);
+            }
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($newPath) {
+                Storage::disk('s3')->delete($newPath);
+            }
+
+            report($e);
+
+            return back()->alertFailure('Erro ao atualizar usuário.');
         }
 
-        return to_route('students.index')->alertSuccess("Informações do aluno(a) {$student->name} atualizadas!");
+        return to_route('students.index')->alertSuccess("Dados do aluno(a) {$student->name} atualizado com sucesso!");
     }
 
     /**
@@ -140,14 +173,14 @@ class StudentController extends Controller
         }
 
         try {
-            /*if($student->avatar) {
+            if($student->avatar) {
                 Storage::disk('s3')->delete($student->avatar);
-            }*/
+            }
             $student->delete();
         } catch (\Exception $e) {
-            return back()->alertFailure("Falha ao excluir as informações do(a) aluno(a) {$student->name}.");
+            return back()->alertFailure("Não foi possível excluir os dados do colaborador(a) {$student->name}. Se o problema persistir entre em contato com o suporte." . $e->getMessage());
         }
 
-        return to_route('students.index')->alertSuccess("Aluno(a) removido!");
+        return back()->alertSuccess('Dados excluídos com sucesso!');
     }
 }

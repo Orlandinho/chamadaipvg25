@@ -3,12 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Enums\Roles;
-use App\Models\User;
+use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreUserRequest extends FormRequest
 {
@@ -30,11 +29,16 @@ class StoreUserRequest extends FormRequest
 
     public function makeSlugFromName($name): string
     {
-        $slug = Str::slug($name);
+        $originalSlug = Str::slug($name);
+        $slug = $originalSlug;
+        $count = 1;
 
-        $count = User::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+        while (Student::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$count}";
+            $count++;
+        }
 
-        return $count ? "{$slug}-{$count}" : $slug;
+        return $slug;
     }
 
     /**
@@ -46,9 +50,9 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => ['required','string','max:255'],
-            'slug' => ['required','string','max:255'],
+            'slug' => ['required','string','max:255', 'unique:users,slug'],
             'avatar' => ['nullable','image','mimes:jpeg,png,jpg','max:250'],
-            'email' => ['required','email','max:255'],
+            'email' => ['required','email','max:255', 'unique:users,email'],
             'role_id' => ['required', Rule::enum(Roles::class)],
             'classroom_id' => ['nullable', Rule::requiredIf($this->role_id === 3), Rule::exists('classrooms', 'id')],
             'password' => ['required','string','min:8'],

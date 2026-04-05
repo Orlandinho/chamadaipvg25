@@ -21,8 +21,8 @@ class CoupleResource extends JsonResource
             'husband' => $this->husband,
             'wife' => $this->wife,
             'slug' => $this->slug,
-            'husband_avatar' => null,
-            'wife_avatar' => null,
+            'husband_avatar' => image_url($this->husband_avatar),
+            'wife_avatar' => image_url($this->wife_avatar),
             'marriage_date' => $this->marriage_date,
             'bodas' => Bodas::tryFrom(floor(now()->diffInYears($this->marriage_date, true)))?->bodas() ?? 'Ainda não completou um ano'
         ];

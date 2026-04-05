@@ -9,6 +9,7 @@
     import { ref } from 'vue';
     import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
     import imageCompression from 'browser-image-compression';
+    import { useImageUpload } from '@/Composables/useImageUpload.js';
 
     const props = defineProps({
         user: Object,
@@ -19,44 +20,19 @@
     const form = useForm({
         name: props.user.name,
         email: props.user.email,
-        avatar: props.user.avatar,
+        avatar: null,
         role_id: props.user.role_id,
         classroom_id: props.user.classroom?.id ?? '',
     });
 
-    const preview = ref(props.user.avatar ?? '');
-
-    const handleImage = async (e) => {
-        const file = e.target.files[0];
-        const compressedFile = ref(null);
-
-        const options = {
-            maxSizeMB: 0.25, // (Max size in MB)
-            maxWidthOrHeight: 400, // Resize width/height
-            useWebWorker: true, // Improves performance
-        };
-
-        try {
-            const compressedBlob = await imageCompression(file, options);
-            compressedFile.value = new File([compressedBlob], file.name, {
-                type: compressedBlob.type,
-            });
-
-            preview.value = URL.createObjectURL(compressedFile.value);
-            form.avatar = compressedFile.value;
-        } catch (error) {
-            form.setError('avatar', 'Houve um problema ao carregar a imagem');
-        }
-    };
+    const { handleImage, preview } = useImageUpload(form, 'avatar');
 
     const submit = () => {
-        //form.patch(route('users.update', props.user));
-
         router.post(route('users.update', props.user), {
             _method: 'patch',
             name: form.name,
             email: form.email,
-            avatar: null,
+            avatar: form.avatar,
             role_id: form.role_id,
             classroom_id: form.classroom?.id ?? '',
         });
@@ -77,17 +53,19 @@
                                 <p class="mt-1 text-sm/6 text-gray-600">Atualização de dados</p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="hidden sm:col-span-4">
+                                    <div class="sm:col-span-4">
                                         <div class="mt-2 flex items-center gap-x-3">
-                                            <UserCircleIcon
-                                                v-if="!form.avatar"
-                                                class="size-14 text-gray-300"
-                                                aria-hidden="true" />
                                             <img
-                                                v-else
+                                                v-if="preview"
                                                 class="inline-block size-14 rounded-full"
                                                 :src="preview"
                                                 alt="Avatar" />
+                                            <img
+                                                v-else-if="user.avatar"
+                                                class="inline-block size-14 rounded-full"
+                                                :src="user.avatar"
+                                                alt="Avatar" />
+                                            <UserCircleIcon v-else class="size-14 text-gray-300" aria-hidden="true" />
                                             <input
                                                 id="avatar"
                                                 @input="(e) => handleImage(e)"

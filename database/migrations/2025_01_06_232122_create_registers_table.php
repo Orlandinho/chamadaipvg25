@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('registers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained();
-            $table->foreignId('classroom_id')->constrained();
+            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
             $table->date('sunday');
             $table->boolean('status');
             $table->timestamps();

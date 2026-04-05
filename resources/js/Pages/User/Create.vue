@@ -6,9 +6,8 @@
     import TextInput from '@/Components/TextInput.vue';
     import SelectInput from '@/Components/SelectInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
-    import { ref } from 'vue';
     import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
-    import imageCompression from 'browser-image-compression';
+    import { useImageUpload } from '@/Composables/useImageUpload.js';
 
     const props = defineProps({
         roles: Object,
@@ -17,36 +16,14 @@
 
     const form = useForm({
         name: '',
+        slug: '',
         email: '',
         role_id: '',
         classroom_id: '',
         avatar: null,
     });
 
-    const preview = ref('');
-
-    const handleImage = async (e) => {
-        const file = e.target.files[0];
-        const compressedFile = ref(null);
-
-        const options = {
-            maxSizeMB: 0.25, // (Max size in MB)
-            maxWidthOrHeight: 400, // Resize width/height
-            useWebWorker: true, // Improves performance
-        };
-
-        try {
-            const compressedBlob = await imageCompression(file, options);
-            compressedFile.value = new File([compressedBlob], file.name, {
-                type: compressedBlob.type,
-            });
-
-            preview.value = URL.createObjectURL(compressedFile.value);
-            form.avatar = compressedFile.value;
-        } catch (error) {
-            form.setError('avatar', 'Houve um problema ao carregar a imagem');
-        }
-    };
+    const { handleImage, preview } = useImageUpload(form, 'avatar');
 
     const submit = () => {
         form.post(route('users.store'));
@@ -73,7 +50,7 @@
                                 </p>
 
                                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="hidden sm:col-span-4">
+                                    <div class="sm:col-span-4">
                                         <div class="mt-2 flex items-center gap-x-3">
                                             <UserCircleIcon
                                                 v-if="!preview"
@@ -112,7 +89,7 @@
                                             required
                                             autofocus />
 
-                                        <InputError class="mt-2" :message="form.errors.name" />
+                                        <InputError class="mt-2" :message="form.errors.name || form.errors.slug" />
                                     </div>
 
                                     <div class="sm:col-span-3">

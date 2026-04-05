@@ -28,6 +28,7 @@
         v-if="props.person.avatar"
         class="inline-block rounded-full"
         :class="size"
+        loading="lazy"
         :src="props.person.avatar"
         :alt="props.person.name" />
     <span

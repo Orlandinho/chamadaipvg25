@@ -24,7 +24,7 @@ class StudentResource extends JsonResource
             'slug' => $this->slug,
             'dob' => $this->dob,
             'contact' => $this->contact,
-            'avatar' => null,
+            'avatar' => image_url($this->avatar),
             'inactive' => (boolean) $this->inactive,
             'classroom' => ClassroomResource::make($this->whenLoaded('classroom')),
             'registers' => RegisterResource::collection($this->whenLoaded('registers')),

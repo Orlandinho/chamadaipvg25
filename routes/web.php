@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::controller(CSVImportController::class)->group(function () {
+        Route::get('/import', 'index')->name('import.index');
         Route::post('/import/students', 'importStudents')->name('import.students');
         Route::post('/import/couples', 'importCouples')->name('import.couples');
     });

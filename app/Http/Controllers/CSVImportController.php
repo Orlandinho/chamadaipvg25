@@ -19,6 +19,11 @@ class CSVImportController extends Controller
             abort(403);
         }
     }
+
+    public function index()
+    {
+        return inertia('Import/Index');
+    }
     public function importStudents(Request $request)
     {
         $request->validate([

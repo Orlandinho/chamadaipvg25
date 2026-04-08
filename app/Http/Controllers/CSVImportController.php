@@ -81,11 +81,11 @@ class CSVImportController extends Controller
             fclose($handle);
             DB::commit();
 
-            return redirect()->back()->with('success', 'Dados dos alunos importados!');
+            return redirect()->back()->alertSuccess('Dados dos alunos importados!');
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);
-            return redirect()->back()->with('error', 'Erro na importação: ' . $e->getMessage());
+            return redirect()->back()->alertFailure('Erro na importação!');
         }
     }
 
@@ -132,11 +132,11 @@ class CSVImportController extends Controller
             fclose($handle);
             DB::commit();
 
-            return redirect()->back()->with('success', 'Dados dos alunos importados!');
+            return redirect()->back()->alertSuccess('Dados dos casais importados!');
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);
-            return redirect()->back()->with('error', 'Erro na importação: ' . $e->getMessage());
+            return redirect()->back()->alertFailure('error', 'Erro na importação');
         }
     }
 

@@ -1,14 +1,13 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, useForm, Link, router } from '@inertiajs/vue3';
+    import { Head, useForm, Link } from '@inertiajs/vue3';
     import InputLabel from '@/Components/InputLabel.vue';
     import InputError from '@/Components/InputError.vue';
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import SelectInput from '@/Components/SelectInput.vue';
-    import { DocumentIcon, UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
+    import { UserCircleIcon } from '@heroicons/vue/24/solid/index.js';
     import { vMaska } from 'maska/vue';
-    import { ref } from 'vue';
     import { useImageUpload } from '@/Composables/useImageUpload.js';
 
     defineProps({
@@ -22,25 +21,6 @@
         contact: '',
         classroom_id: '',
     });
-
-    const csvFile = ref(null);
-
-    const handleCSV = (e) => {
-        csvFile.value = e.target.files[0];
-    };
-
-    const sendCSV = () => {
-        router.post(
-            route('import.students'),
-            { students_csv: csvFile.value },
-            {
-                forceFormData: true,
-                onSuccess: (data) => {
-                    csvFile.value = 'Dados inseridos';
-                },
-            },
-        );
-    };
 
     const { handleImage, preview } = useImageUpload(form, 'avatar');
 
@@ -57,35 +37,6 @@
             <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <div v-if="$page.props.auth.user.role_id === 1" class="mb-4 border-b border-gray-200 pb-6">
-                            <div class="text-sm mb-4 text-gray-500">
-                                {{ csvFile ? csvFile.name : 'Importar dados dos alunos' }}
-                            </div>
-                            <div class="flex items-center gap-x-3">
-                                <DocumentIcon
-                                    :class="csvFile ? 'text-green-400' : 'text-gray-300'"
-                                    class="size-8"
-                                    aria-hidden="true" />
-                                <input
-                                    id="students_scv"
-                                    @input="(e) => handleCSV(e)"
-                                    type="file"
-                                    accept=".csv"
-                                    class="hidden" />
-                                <button
-                                    v-if="csvFile"
-                                    @click="sendCSV"
-                                    class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                    Enviar
-                                </button>
-                                <label
-                                    v-else
-                                    for="students_scv"
-                                    class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                    Selecionar Arquivo .csv
-                                </label>
-                            </div>
-                        </div>
                         <form @submit.prevent="submit">
                             <div class="border-b border-gray-900/10 pb-12">
                                 <h2 class="text-base/7 font-semibold text-gray-900">Informações do(a) Aluno(a)</h2>

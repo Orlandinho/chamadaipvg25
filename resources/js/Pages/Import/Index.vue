@@ -58,21 +58,26 @@
                                     o processo pode demorar um pouco.
                                 </p>
                                 <p class="mt-4 text-sm text-gray-700">
-                                    <span class="font-bold">Para os Alunos: </span>é necessário que siga nessa ordem:
-                                    <span class="font-bold">Nome, Sala, Data de Nascimento e Contato/WhatsApp</span>. Se
-                                    a sala não foi criada ainda ela será criada nesse processo, apenas certifique-se de
-                                    que não há erros de gramática no nome da sala. Se em um aluno o nome da sala estiver
+                                    <span class="font-bold">Para os Alunos: </span>é necessário que as colunas sigam
+                                    essa ordem:
+                                    <span class="font-bold">Nome, Sala, Data de Nascimento e Contato/WhatsApp</span>.
+                                    Nome e Data de Nascimento são obrigatórios! Se a sala não foi criada ainda ela será
+                                    criada nesse processo, apenas certifique-se de que não há erros de gramática no nome
+                                    da sala. Se em um aluno o nome da sala estiver
                                     <span class="text-red-600">Cordeirinhos</span> e em outro aluno estiver
                                     <span class="text-red-600">Cordeirinho</span> então será criada uma sala para cada
                                     nome. É importante que os nomes sejam iguais. Não se preocupe se os dados estiverem
                                     sendo inseridos todos em letras maiúsculas ou minúsculas, pois durante o processo de
-                                    inserção isso será tratado automaticamente.
+                                    inserção isso será automaticamente normalizado. A Data de Nascimento deve estar
+                                    formatada da seguinte maneira: DD/MM/AAAA. E o Contato/WhatsApp deve incluir DDD:
+                                    (11) 91234-5678/8765-4321.
                                 </p>
                                 <p class="mt-4 text-sm text-gray-700">
                                     <span class="font-bold">Para os Casais: </span>mesma regra acima, porém com menos
                                     campos. Apenas
                                     <span class="font-bold">Nome do Esposo, Nome da Esposa e Data de Casamento</span>,
-                                    seguindo essa ordem sempre.
+                                    seguindo essa ordem sempre. A Data de Casamento segue a mesma formatação que foi
+                                    aplicada na Data de Nascimento acima. Todos os campos são obrigatórios!
                                 </p>
                             </div>
 

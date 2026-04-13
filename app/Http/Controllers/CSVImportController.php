@@ -28,7 +28,7 @@ class CSVImportController extends Controller
     public function importStudents(Request $request)
     {
         $request->validate([
-            'students_csv' => ['required', 'file', 'mimes:csv,txt', 'max:2048']
+            'students_csv' => ['required', 'file', 'mimes:csv', 'max:2048']
         ]);
 
         $file = $request->file('students_csv');
@@ -45,15 +45,21 @@ class CSVImportController extends Controller
             $classroomMap = [];
             while (($row = fgetcsv($handle)) !== false) {
 
-                $classroomName = trim($row[1]);
+                $rawRoomName = Str::title(trim($row[1]));
 
                 // Se a sala ainda não foi consultada neste loop, busca ou cria
-                if (!isset($classroomMap[$classroomName])) {
-                    $classroom = Classroom::firstOrCreate(['name' => $this->formatTitleWithExceptions($classroomName), 'slug' => Str::slug($classroomName)]);
-                    $classroomMap[$classroomName] = $classroom->id;
+                if (!isset($classroomMap[$rawRoomName])) {
+                    $classroom = Classroom::firstOrCreate(
+                        ['name' => $rawRoomName],
+                        [
+                            'slug' => Str::slug($rawRoomName),
+                            'description' => 'Descrição'
+                        ]
+                    );
+                    $classroomMap[$rawRoomName] = $classroom->id;
                 }
 
-                $classroomId = $classroomMap[$classroomName];
+                $classroomId = $classroomMap[$rawRoomName];
 
                 $studentsBatch[] = [
                     'name'         => $this->formatTitleWithExceptions($row[0]),
@@ -85,14 +91,14 @@ class CSVImportController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);
-            return redirect()->back()->alertFailure('Erro na importação!');
+            return redirect()->back()->alertFailure('Erro na importação!', $e->getMessage());
         }
     }
 
     public function importCouples(Request $request)
     {
         $request->validate([
-            'couples_csv' => ['required', 'file', 'mimes:csv,txt', 'max:2048']
+            'couples_csv' => ['required', 'file', 'mimes:csv', 'max:2048']
         ]);
 
         $file = $request->file('couples_csv');
@@ -100,33 +106,32 @@ class CSVImportController extends Controller
         fgetcsv($handle); // Pula o cabeçalho
 
         $batchSize = 500;
-        $studentsBatch = [];
+        $couplesBatch = [];
         $now = now(); // Para os timestamps created_at/updated_at
 
         DB::beginTransaction();
 
         try {
             while (($row = fgetcsv($handle)) !== false) {
-                $studentsBatch[] = [
-                    'husband'         => $this->formatTitleWithExceptions($row[0]),
-                    'wife'         => $this->formatTitleWithExceptions($row[1]),
-                    'slug'         => $this->makeSlugForCouple($row[0], $row[1]),
-                    'classroom_id' => $row[1],
-                    'marriage_date' => Carbon::createFromFormat('d/m/Y', $row[2])->format('Y-m-d'),
-                    'created_at'   => $now,
-                    'updated_at'   => $now,
+                $couplesBatch[] = [
+                    'husband'        => $this->formatTitleWithExceptions($row[0]),
+                    'wife'           => $this->formatTitleWithExceptions($row[1]),
+                    'slug'           => $this->makeSlugForCouple($row[0], $row[1]),
+                    'marriage_date'  => Carbon::createFromFormat('d/m/Y', $row[2])->format('Y-m-d'),
+                    'created_at'     => $now,
+                    'updated_at'     => $now,
                 ];
 
                 // Quando atingir o tamanho do lote, insere e limpa o array
-                if (count($studentsBatch) >= $batchSize) {
-                    Student::insert($studentsBatch);
-                    $studentsBatch = [];
+                if (count($couplesBatch) >= $batchSize) {
+                    Couple::insert($couplesBatch);
+                    $couplesBatch = [];
                 }
             }
 
             // Insere o restante que sobrou no array
-            if (!empty($studentsBatch)) {
-                Student::insert($studentsBatch);
+            if (!empty($couplesBatch)) {
+                Couple::insert($couplesBatch);
             }
 
             fclose($handle);
@@ -136,7 +141,7 @@ class CSVImportController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             fclose($handle);
-            return redirect()->back()->alertFailure('error', 'Erro na importação');
+            return redirect()->back()->alertFailure('Erro na importação');
         }
     }
 

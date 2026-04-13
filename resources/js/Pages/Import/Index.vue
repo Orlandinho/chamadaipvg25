@@ -4,24 +4,25 @@
     import { DocumentIcon } from '@heroicons/vue/24/solid/index.js';
     import { ref } from 'vue';
 
-    const csvFile = ref(null);
+    const csvStudentsFile = ref(null);
+    const csvCouplesFile = ref(null);
 
     const handleStudentsCSV = (e) => {
-        csvFile.value = e.target.files[0];
+        csvStudentsFile.value = e.target.files[0];
     };
 
     const handleCouplesCSV = (e) => {
-        csvFile.value = e.target.files[0];
+        csvCouplesFile.value = e.target.files[0];
     };
 
     const sendStudentsCSV = () => {
         router.post(
             route('import.students'),
-            { students_csv: csvFile.value },
+            { students_csv: csvStudentsFile.value },
             {
                 forceFormData: true,
                 onSuccess: (data) => {
-                    csvFile.value = 'Dados inseridos';
+                    csvStudentsFile.value = 'Dados inseridos';
                 },
             },
         );
@@ -30,11 +31,11 @@
     const sendCouplesCSV = () => {
         router.post(
             route('import.couples'),
-            { students_csv: csvFile.value },
+            { couples_csv: csvCouplesFile.value },
             {
                 forceFormData: true,
                 onSuccess: (data) => {
-                    csvFile.value = 'Dados inseridos';
+                    csvCouplesFile.value = 'Dados inseridos';
                 },
             },
         );
@@ -83,11 +84,11 @@
 
                             <div class="mt-6">
                                 <div class="text-lg mb-4 text-gray-800">
-                                    {{ csvFile ? csvFile.name : 'Importar Dados dos Alunos' }}
+                                    {{ csvStudentsFile ? csvStudentsFile.name : 'Importar Dados dos Alunos' }}
                                 </div>
                                 <div class="flex items-center gap-x-3">
                                     <DocumentIcon
-                                        :class="csvFile ? 'text-green-400' : 'text-gray-300'"
+                                        :class="csvStudentsFile ? 'text-green-400' : 'text-gray-300'"
                                         class="size-8"
                                         aria-hidden="true" />
                                     <input
@@ -97,7 +98,7 @@
                                         accept=".csv"
                                         class="hidden" />
                                     <button
-                                        v-if="csvFile"
+                                        v-if="csvStudentsFile"
                                         @click="sendStudentsCSV"
                                         class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                                         Enviar
@@ -113,11 +114,11 @@
 
                             <div class="mt-6">
                                 <div class="text-lg mb-4 text-gray-800">
-                                    {{ csvFile ? csvFile.name : 'Importar Dados dos Casais' }}
+                                    {{ csvCouplesFile ? csvCouplesFile.name : 'Importar Dados dos Casais' }}
                                 </div>
                                 <div class="flex items-center gap-x-3">
                                     <DocumentIcon
-                                        :class="csvFile ? 'text-green-400' : 'text-gray-300'"
+                                        :class="csvCouplesFile ? 'text-green-400' : 'text-gray-300'"
                                         class="size-8"
                                         aria-hidden="true" />
                                     <input
@@ -127,7 +128,7 @@
                                         accept=".csv"
                                         class="hidden" />
                                     <button
-                                        v-if="csvFile"
+                                        v-if="csvCouplesFile"
                                         @click="sendCouplesCSV"
                                         class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                                         Enviar

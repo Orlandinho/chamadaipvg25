@@ -17,14 +17,16 @@
         },
     });
 
+    const exceptions = ['de', 'di', 'do', 'da', 'dos', 'das', 'e', 'em'];
+
     const husbandInitials = computed(() => {
-        let initials = props.couple.husband.split(' ');
+        let initials = props.couple.husband.split(' ').filter((p) => !exceptions.includes(p.toLowerCase()));
 
         return initials.length > 1 ? initials[0].charAt() + initials[1].charAt() : initials[0].charAt();
     });
 
     const wifeInitials = computed(() => {
-        let initials = props.couple.wife.split(' ');
+        let initials = props.couple.wife.split(' ').filter((p) => !exceptions.includes(p.toLowerCase()));
 
         return initials.length > 1 ? initials[0].charAt() + initials[1].charAt() : initials[0].charAt();
     });

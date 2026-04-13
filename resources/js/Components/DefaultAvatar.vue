@@ -16,8 +16,10 @@
         },
     });
 
+    const exceptions = ['de', 'di', 'do', 'da', 'dos', 'das', 'e', 'em'];
+
     const getInitials = computed(() => {
-        let initials = props.person.name.split(' ');
+        let initials = props.person.name.split(' ').filter((p) => !exceptions.includes(p.toLowerCase()));
 
         return initials.length > 1 ? initials[0].charAt() + initials[1].charAt() : initials[0].charAt();
     });

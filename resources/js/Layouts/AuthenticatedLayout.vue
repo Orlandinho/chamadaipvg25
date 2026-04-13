@@ -65,6 +65,12 @@
                                     :active="route().current('couples.*')">
                                     Casais
                                 </NavLink>
+                                <NavLink
+                                    v-if="$page.props.auth.user.role_id === 1"
+                                    :href="route('import.index')"
+                                    :active="route().current('import.*')">
+                                    Importar Dados
+                                </NavLink>
                             </div>
                         </div>
 
@@ -180,6 +186,12 @@
                             :href="route('couples.index')"
                             :active="route().current('couples.*')">
                             Casais
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.role_id === 1"
+                            :href="route('import.index')"
+                            :active="route().current('import.*')">
+                            Importar Dados
                         </ResponsiveNavLink>
                     </div>
 

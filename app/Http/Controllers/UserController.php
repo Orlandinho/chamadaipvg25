@@ -61,8 +61,10 @@ class UserController extends Controller
                 }
 
                 $data['avatar'] = $path;
-                User::create($data);
             }
+
+            User::create($data);
+
         } catch (\Throwable $e) {
             return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte.');
         }

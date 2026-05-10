@@ -65,8 +65,10 @@ class StudentController extends Controller
                 }
 
                 $data['avatar'] = $path;
-                Student::create($data);
             }
+
+            Student::create($data);
+
         } catch (\Throwable $e) {
             return back()->alertFailure('Não foi possível realizar o cadastro. Se o problema persistir entre em contato com o suporte.');
         }
@@ -117,8 +119,6 @@ class StudentController extends Controller
                 abort(403);
             }
         }
-
-
 
         $data = $request->safe()->except('avatar');
         $oldPath = $student->avatar;

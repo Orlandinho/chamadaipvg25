@@ -44,6 +44,7 @@ class CoupleController extends Controller
     public function store(StoreCoupleRequest $request)
     {
         $data = $request->validated();
+
         try {
             if ($file = $request->file('husband_avatar')) {
 
